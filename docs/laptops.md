@@ -1,18 +1,12 @@
 # Laptops
 
-Seal talks to the HP BIOS mailbox (`hpqBIntM`), which every OMEN and Victus laptop exposes. What differs
-between models is which commands the firmware answers and which bytes each performance mode wants. That is
-the only model-specific thing in the app, and it lives in one table: [`src/Platform.cs`](../src/Platform.cs).
+Seal communicates directly with vendor firmware interfaces: the HP BIOS mailbox (`hpqBIntM`), ASUS ACPI WMI (`ASUS_WMI`), and Acer Gaming WMI / Embedded Controller (`Acer_WMIData`). What differs between models is which commands the firmware answers and which bytes each performance mode wants. All model-specific configurations live in one table: [`src/Platform.cs`](../src/Platform.cs).
 
-## The two states
+## Hardware support status
 
-Every OMEN and Victus laptop is **supported**, and there is no "unsupported" list. A board nobody has ever seen
-still runs: Seal reads the firmware's own system-design data, works out which generation it is, and drives it
-with the mode bytes documented for that generation. Power, GPU and lighting appear only where the firmware
-answers for them. If it answers with nothing usable, Seal stays read-only and says so in the window.
+Every supported OMEN, Victus, ASUS ROG/TUF, and Acer Predator/Nitro laptop runs out of the box, and there is no "unsupported" list. Even on a brand new board, Seal queries the system design data, works out which generation and vendor interface it is, and drives it with the documented mode bytes. Power, GPU and lighting appear only where the firmware answers for them. If it answers with nothing usable, Seal stays read-only and says so in the window.
 
-A model becomes **verified** once somebody has run the checklist below on that exact board and every control
-did what it says. Its settings are then fixed rather than worked out at run time.
+A model becomes **verified** once somebody has run the checklist below on that exact board and confirmed every control did what it says. Its settings are then fixed rather than worked out at run time.
 
 ## The boards
 

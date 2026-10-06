@@ -3,14 +3,14 @@
 <p align="center">
 <a href="https://github.com/sahilneverdies/Seal/releases/latest/download/Seal.exe"><img alt="Download Seal.exe" src="https://img.shields.io/badge/Download%20Seal.exe-3F8CFF?style=for-the-badge&logo=windows&logoColor=white"></a>
 &nbsp;
-<a href="https://ohmanapp.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-21262D?style=for-the-badge"></a>
+<a href="https://sahilneverdies.github.io/Seal/"><img alt="Website" src="https://img.shields.io/badge/Website-21262D?style=for-the-badge"></a>
 <a href="docs/laptops.md"><img alt="Supported laptops" src="https://img.shields.io/badge/Supported%20laptops-21262D?style=for-the-badge"></a>
 <a href="docs/research.md"><img alt="How the firmware works" src="https://img.shields.io/badge/How%20it%20works-21262D?style=for-the-badge"></a>
 </p>
 
 Don't you love paying $2,500 for a laptop and still having ads pushed down your throat by mandatory software
 with no alternative? Seal is the alternative. Modes, fan curves, power, graphics switching and keyboard
-lighting in one 1.3 MB executable, replacing OMEN Gaming Hub and OMEN Light Studio and speaking the same
+lighting in one 1.6 MB executable, replacing bloated vendor hubs and speaking the same
 firmware interface, without any ads, services, or accounts.
 
 ## Features
