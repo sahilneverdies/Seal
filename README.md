@@ -158,11 +158,6 @@ Ideas and issues are welcome.
 While this has been tested extensively, it is still sending commands to your laptop's firmware.
 Use at your own risk.
 
-## Declaration
-
-Fable 5.1 was used for in-depth research on laptop models and their manuals so I can add extensive device support
-to Seal. It also assisted in code-writing. The code has been independently verified and security reviewed. Feel free to review it on your own terms and suggest improvements if any.
-
 ## Licence
 
 GPL-3.0-or-later for the code. OFL 1.1 for the Font. LGPL-2.1 for the PawnIO modules embedded in the exe
