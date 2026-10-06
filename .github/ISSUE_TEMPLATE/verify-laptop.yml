@@ -1,0 +1,75 @@
+name: Verify my laptop
+description: You ran the checklist on your machine and want it marked verified
+title: "Verify: <model> (board XXXX)"
+labels: ["verification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you, this is the most useful thing anyone can contribute.
+        The checklist is in [docs/laptops.md](https://github.com/P4R1H/Ohman/blob/main/docs/laptops.md#verifying-your-laptop).
+        Run `tools\support-info.cmd` first; it writes `tools\support-info.txt` with no personal data in it.
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      description: As printed on the machine, or from Settings in Seal
+      placeholder: HP OMEN 16-wf0xxx (2023)
+    validations:
+      required: true
+  - type: input
+    id: board
+    attributes:
+      label: Board id
+      description: Settings in Seal, top right, or `(Get-CimInstance Win32_BaseBoard).Product` in PowerShell
+      placeholder: 8BAA
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Seal version
+      placeholder: v2.0
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: What worked
+      description: Tick only what you actually saw happen. An unticked box is data too.
+      options:
+        - label: Eco, Balanced and Performance each changed the fans within a few seconds
+        - label: Max made both fans go to full speed
+        - label: Manual held the levels I set
+        - label: Curve followed the points I dragged
+        - label: Auto came back to sensible fan behaviour
+        - label: Power gain moved without anything throttling or resetting
+        - label: GPU power (Base / Boost / Max) had an effect, or the row is not shown on my model
+        - label: Graphics switching worked, or I did not test it
+        - label: The keyboard zones in the app match the zones on my keyboard
+        - label: Static, Breathe, Cycle and Wave all did something
+        - label: After exiting Seal the fans went back to normal within two minutes
+        - label: With the optional driver installed, the CPU temperature looked right and the fans still behaved
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything that did not match
+      description: Wrong fan numbers, a control that does nothing, zones in the wrong order, a mode that feels identical to another one.
+  - type: textarea
+    id: supportinfo
+    attributes:
+      label: tools\support-info.txt
+      description: Paste the contents, or drag the file into this box.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: drivertest
+    attributes:
+      label: tools\drivertest.txt (optional, but it is the most useful thing on a new board)
+      description: >
+        Install the driver from Settings, then run tools\drivertest.cmd. It is read-only. This is what tells us
+        whether the CPU's own temperature sensor answers on your chip, and whether your embedded controller is
+        laid out the way we think it is, which decides whether boards like yours can ever have their fans
+        driven when the firmware refuses.
+      render: text

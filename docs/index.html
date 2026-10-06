@@ -1,0 +1,512 @@
+<!doctype html>
+<!-- Source of truth for the site. Published to ohmanapp/ohmanapp.github.io, which is what GitHub Pages
+     serves; this repository does not serve Pages itself. Editing here and forgetting to publish is the
+     one way to get them out of step. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Seal - OMEN Gaming Hub alternative for HP OMEN and Victus laptops</title>
+<meta name="description" content="Modes, fan curves, power, graphics switching and keyboard lighting in one 1.3 MB executable. A replacement for OMEN Gaming Hub and OMEN Light Studio that speaks the same firmware interface, without any ads, services, or accounts.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='4' y1='4' x2='24' y2='24'%3E%3Cstop offset='0' stop-color='%238FBCFF'/%3E%3Cstop offset='1' stop-color='%232454A6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='7.4' y='7.4' width='13.2' height='13.2' rx='2.2' fill='url(%23g)' transform='rotate(45 14 14)'/%3E%3C/svg%3E">
+<meta property="og:title" content="Seal">
+<meta property="og:description" content="Ditch the Hub, keep the control. Modes, fan curves, power, graphics switching and keyboard lighting in one 1.3 MB executable, without ads, services or accounts.">
+<link rel="canonical" href="https://ohmanapp.github.io/">
+<meta property="og:url" content="https://ohmanapp.github.io/">
+<meta property="og:image" content="https://ohmanapp.github.io/hero.png">
+<meta property="og:image:width" content="3840">
+<meta property="og:image:height" content="1680">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+/* ---------- palette and tokens: dark only, one accent, warm neutrals to match the app ---------- */
+:root{
+  --bg:#100E0C;        /* canvas */
+  --surface:#161311;   /* chips, code, quiet fills */
+  --border:#272320;    /* the single 1px hairline */
+  --border-hi:#37322E; /* hairline on hover */
+  --text:#FFFFFF;      /* primary */
+  --muted:#A29D99;     /* secondary, 8.4:1 on --bg */
+  --dim:#CFC9C4;       /* inline code */
+  --accent:#3F8CFF;
+  --accent-hi:#6BA6FF;
+  --ok:#4AC06C;
+  --r:10px;            /* surface radius */
+  --t:120ms ease;
+  --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+  font-size:15px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 28px}
+a{
+  color:var(--accent);
+  text-decoration:underline;
+  text-decoration-color:rgba(63,140,255,.34);
+  text-underline-offset:3px;
+  transition:color var(--t),text-decoration-color var(--t);
+}
+a:hover{color:var(--accent-hi);text-decoration-color:currentColor}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+img{display:block}
+
+/* ---------- 1. header row ---------- */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px}
+.brand{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:600;letter-spacing:-.01em}
+/* the mark, and the joke the name is: hover it and it says what it is */
+.mark{position:relative;width:38px;height:38px;flex:none}
+.mark svg,.mark span{position:absolute;inset:0;transition:opacity 220ms ease,transform 320ms cubic-bezier(.22,1,.28,1)}
+.mark span{font-size:28px;line-height:38px;text-align:center;opacity:0;transform:scale(.6) rotate(-18deg)}
+.brand:hover .mark svg{opacity:0;transform:scale(.6) rotate(18deg)}
+.brand:hover .mark span{opacity:1;transform:none}
+.bar nav{display:flex;align-items:center;gap:6px}
+.bar .out{padding:6px 10px;color:var(--muted);font-size:14px;text-decoration:none;border-radius:8px}
+.bar .out:hover{color:var(--text);background:var(--surface)}
+.bar .dl{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 12px;border-radius:8px;line-height:1.62;
+  background:var(--accent);color:#0B0E14;
+  font-size:14px;font-weight:600;text-decoration:none;
+  transition:background-color var(--t);
+}
+.bar .dl:hover{background:var(--accent-hi)}
+/* GitHub Primer dark: its own surface and border, so the button reads as GitHub's and not as ours */
+.gh{
+  --gh-bg:#21262D; --gh-bg-hi:#30363D; --gh-edge:rgba(240,246,252,.14); --gh-ink:#F0F6FC;
+  background:var(--gh-bg);border:1px solid var(--gh-edge);color:var(--gh-ink);
+}
+.gh:hover{background:var(--gh-bg-hi);border-color:rgba(240,246,252,.24);color:var(--gh-ink)}
+.gh .n{
+  margin-left:2px;padding-left:9px;border-left:1px solid var(--gh-edge);
+  font-variant-numeric:tabular-nums;color:var(--gh-ink);
+}
+.bar .gh{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 12px;border-radius:8px;line-height:1.62;
+  font-size:14px;font-weight:600;text-decoration:none;
+  transition:background-color var(--t),border-color var(--t);
+}
+.bar .gh svg{width:13px;height:13px;flex:none}
+.bar .dl svg{width:13px;height:13px;flex:none}
+
+/* The header is three glyphs in one strip at every width. The 1 px gap over the container's own border colour
+   draws the dividers, so there are no per-segment borders to collapse; Download keeps the accent and GitHub keeps
+   its own surface, so it still reads as three actions rather than one ambiguous control. Each of the three carries
+   its own padding at a specificity the child selector cannot reach, which is why they are always set together. */
+.bar nav{gap:1px;background:var(--border);border-radius:9px;overflow:hidden}
+.bar nav > a{border:0;border-radius:0;gap:0}
+.bar .out,.bar .gh,.bar .dl{padding:6px 12px}
+.bar .out{display:inline-flex;align-items:center;background:var(--surface);color:var(--text)}
+.bar .out svg{display:block}
+.bar .gh{background:var(--gh-bg)}
+.bar .out svg,.bar .gh svg,.bar .dl svg{width:14px;height:14px}
+.bar .lbl,.bar .gh .n{display:none}
+
+/* On a PC there is room for both to be a step larger. The strip is padded to the mark's own height rather than
+   to whatever the glyph needs: centring alone left a 42 px brand beside a 32 px pill, which reads as two things
+   at different scales instead of one navbar. Equal heights are what make it one row. */
+@media (min-width:561px){
+  .brand{font-size:17px;gap:4px}
+  .mark{width:40px;height:40px}
+  .mark span{font-size:30px;line-height:40px}
+  .bar nav{border-radius:11px}
+  .bar .out,.bar .gh,.bar .dl{padding:7px 14px}
+  .bar .out svg,.bar .gh svg,.bar .dl svg{width:16px;height:16px}
+}
+
+/* ---------- 2. hero ---------- */
+.hero{padding-top:72px}
+h1{
+  margin:0 0 20px;
+  font-size:clamp(29px,6vw,50px);
+  font-weight:600;
+  line-height:1.14;
+  letter-spacing:-.028em;
+  text-wrap:balance;
+}
+.lede{margin:0;color:var(--muted);font-size:16.5px}
+
+/* ---------- 3. buttons and meta ---------- */
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:44px;padding:0 20px;
+  border:1px solid transparent;border-radius:var(--r);
+  font:inherit;font-size:15px;font-weight:600;
+  text-decoration:none;white-space:nowrap;
+  transition:background-color var(--t),border-color var(--t),color var(--t);
+}
+.btn-primary{background:var(--accent);color:#0B0E14}      /* dark label keeps 6.9:1 on the accent */
+.btn-primary:hover{background:var(--accent-hi);color:#0B0E14}   /* a:hover would paint the label the colour of the fill */
+.btn-secondary{border-color:var(--border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--border-hi);background:var(--surface)}
+.btn.gh .n{font-size:14px}
+.btn svg{width:14px;height:14px;flex:none}
+.count{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+.meta{margin:16px 0 0;color:var(--muted);font-size:13px}
+
+/* ---------- 4. the hero shot, and the strip of screens ---------- */
+.shot{
+  width:100%;max-width:460px;height:auto;
+  margin:56px auto 0;
+  border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 18px 44px rgba(0,0,0,.55);
+}
+
+/* full-bleed: the only thing on the page that leaves the column */
+.strip{
+  margin:64px 0 0;width:100vw;position:relative;left:50%;transform:translateX(-50%);
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+}
+.strip-track{display:flex;align-items:center;width:max-content;animation:drift 64s linear infinite}
+.strip:hover .strip-track{animation-play-state:paused}
+/* One scale for all four, never one height: the window is a different size on every page and that is the point.
+   Keyboard is the wide one and Settings the tall one, exactly as they are on screen. Widths are the window's own
+   dimensions at 0.72; height follows from the image, so nothing is stretched.
+   The spacing is a margin and not a gap, because a gap is not part of the track's width and the loop would land
+   8px short every cycle. */
+.strip img{
+  height:auto;flex:none;margin-right:22px;
+  border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 18px 44px rgba(0,0,0,.55);
+}
+.strip img[width="920"]{width:331px}
+.strip img[width="1400"]{width:503px}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(calc(-100% / 3))}}
+@media (prefers-reduced-motion:reduce){.strip-track{animation:none}.strip{overflow-x:auto}}
+
+/* ---------- sections ---------- */
+section{margin-top:68px}
+h2{margin:0 0 22px;font-size:19px;font-weight:600;letter-spacing:-.015em}
+h3{margin:34px 0 0;font-size:15px;font-weight:600}
+p{margin:0 0 14px}
+p:last-child{margin-bottom:0}
+
+/* ---------- 5. what it does: two columns ---------- */
+.dl{display:grid;grid-template-columns:126px 1fr;column-gap:28px;margin:0}
+.dl dt{padding:11px 0;font-weight:600}
+.dl dd{margin:0;padding:11px 0;color:var(--muted)}
+.dl dt:not(:first-of-type),.dl dd:not(:first-of-type){border-top:1px solid var(--border)}
+
+/* ---------- 6. command chips: real opcodes ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:22px 0 0;padding:0;list-style:none}
+.chips li{
+  display:flex;align-items:baseline;gap:6px;
+  padding:5px 9px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+}
+.chips b{color:var(--accent);font-weight:400}
+
+/* ---------- 7. code ---------- */
+pre{
+  margin:14px 0;padding:12px 14px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  overflow-x:auto;
+}
+pre code{font-size:13px;color:var(--dim)}
+code{font-family:var(--mono)}
+p code,li code,td code{
+  padding:1px 5px;
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  font-size:12.5px;color:var(--dim);
+}
+/* long paths wrap mid-word, so they get no box to break across lines */
+code.path{padding:0;background:none;border:0;overflow-wrap:anywhere}
+ol{margin:18px 0 0;padding-left:22px;color:var(--muted)}
+ol li{margin-bottom:16px}
+ol li:last-child{margin-bottom:0}
+
+/* ---------- 7b. laptops table ---------- */
+.tablewrap{overflow-x:auto;margin-top:6px}
+.models{width:100%;border-collapse:collapse;font-size:14px}
+.models th{text-align:left;font-weight:600;padding:8px 12px 8px 0;border-bottom:1px solid var(--border);color:var(--muted);font-size:12.5px;letter-spacing:.02em}
+.models td{padding:10px 12px 10px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.models td:last-child,.models th:last-child{padding-right:0}
+.models td.st,.models th.st{white-space:nowrap}
+.models td.ids{font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.5}
+.models td.st{white-space:nowrap;color:var(--muted)}
+.models td.st.v{color:var(--ok)}
+.models .ids b.v,.note b.v{color:var(--ok);font-weight:600}
+.note{margin-top:16px;color:var(--muted);font-size:13px}
+/* the family names, so someone scanning finds their own laptop without reading board ids */
+.fam{color:var(--text);font-size:15px}
+
+/* ---------- 8. footer ---------- */
+footer{
+  margin-top:60px;padding:26px 0 60px;
+  border-top:1px solid var(--border);
+  color:var(--muted);font-size:13px;
+}
+footer p{margin:0 0 8px}
+
+/* ---------- responsive: 360px up, no horizontal scroll ---------- */
+@media (max-width:640px){
+  .pair{grid-template-columns:1fr;gap:28px}
+}
+@media (max-width:560px){
+  .dl{grid-template-columns:1fr}
+  /* One rule per item, under the heading, binding it to its own text.
+     Both selectors are spelled out because the base rule is .dl dd:not(:first-of-type), which out-specifies a
+     plain .dl dd - so the old reset here never applied and dt and dd were each drawing a line. That was the
+     pair of rules stacked either side of every heading on a phone. */
+  .dl dt,.dl dt:not(:first-of-type){padding:22px 0 0;border-top:0}
+  .dl dt:first-of-type{padding-top:0}
+  .dl dd,.dl dd:not(:first-of-type){margin-top:7px;padding:9px 0 0;border-top:1px solid var(--border)}
+  .brand{gap:6px}
+}
+@media (max-width:420px){
+  .wrap{padding:0 18px}
+  .cta{flex-direction:column;align-items:stretch}
+  .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- 1. header -->
+  <header class="bar">
+    <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 28 28" width="38" height="38"><defs><linearGradient id="mk" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="24" y2="24"><stop offset="0" stop-color="#8FBCFF"/><stop offset="1" stop-color="#2454A6"/></linearGradient></defs><rect x="7.4" y="7.4" width="13.2" height="13.2" rx="2.2" fill="url(#mk)" transform="rotate(45 14 14)"/></svg><span>🦭</span></span>Seal</span>
+    <nav>
+      <a class="out" href="#laptops" aria-label="Supported laptops" title="Laptops Seal supports">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="3.4" width="9.6" height="6.6" rx="1.2"/><path d="M1.6 12.6h12.8"/></svg>
+        <span class="lbl">Laptops</span>
+      </a>
+      <a class="gh" href="https://github.com/sahilneverdies/Seal" aria-label="Seal on GitHub" title="Seal on GitHub">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+        <span class="lbl">GitHub</span> <span class="n" id="starsNav" hidden></span>
+      </a>
+      <a class="dl" href="https://github.com/sahilneverdies/Seal/releases/latest" aria-label="Download Seal" title="Download the latest release">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 1v8.2M4.6 6.2L8 9.6l3.4-3.4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11.5v2A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+        <span class="lbl">Download</span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- 2. hero -->
+    <div class="hero">
+      <h1>Ditch the hub.<br>Keep the control.</h1>
+      <p class="lede">Modes, fan curves, power, graphics switching and keyboard lighting in one 1.3&nbsp;MB executable. A replacement for OMEN Gaming Hub &amp; OMEN Light Studio that speaks the same firmware interface, without any ads, services, or accounts.</p>
+
+      <!-- 3. actions -->
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/sahilneverdies/Seal/releases/latest">Download from GitHub</a>
+        <a class="btn gh" href="https://github.com/sahilneverdies/Seal">
+          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+          Star on GitHub <span class="n" id="stars" hidden></span>
+        </a>
+      </div>
+      <p class="meta"><span id="ver">v1.0</span> &middot; <span id="size">1.3 MB</span> &middot; Windows 10/11</p>
+    </div>
+
+    <!-- 4. the app -->
+    <img class="shot" src="home.png" width="920" height="1082"
+         alt="The Seal panel: Eco, Balanced and Performance buttons, live CPU and GPU temperatures and fan speeds, and rows for fans, power gain and keyboard lighting.">
+
+    <!-- 5. what it does -->
+    <section aria-labelledby="what">
+      <h2 id="what">What it does</h2>
+      <dl class="dl">
+        <dt>Modes</dt>
+        <dd>Eco &middot; Balanced &middot; Performance, one click, the OMEN key, or a hotkey. Each mode remembers its own fans, power gain and GPU choice, and the whole app takes that mode's colour.</dd>
+        <dt>Fan control</dt>
+        <dd>Auto (this model's own curve), Max, Manual per fan, or your own curve: seven points you drag, a floor, a ramp delay, and a separate GPU curve if you unlink it. The live reading rides the curve so you can see what it is about to do.</dd>
+        <dt>Max fan</dt>
+        <dd>Full speed with a way back: it returns to Auto once the chips are below 60&deg; for two minutes, or after 15, 30 or 60 minutes.</dd>
+        <dt>Power gain</dt>
+        <dd>OGH's "Smart Performance Gain": +0 to +15&nbsp;W on the CPU+GPU budget that NVIDIA Dynamic Boost draws from.</dd>
+        <dt>GPU power</dt>
+        <dd>Base &middot; Boost &middot; Max, or follow the mode.</dd>
+        <dt>Graphics</dt>
+        <dd>Hybrid, Discrete (the MUX) or iGPU&nbsp;only, whichever your firmware offers. Written the way OGH writes it, with the restart it needs.</dd>
+        <dt>Lighting</dt>
+        <dd>The keyboard drawn as it actually lights. Pick a key, a row, a zone or the whole board, then a hue and a shade; or Breathe, Cycle, Wave, or hand it to Windows Dynamic Lighting. Per-key selection is there for the boards that have it.</dd>
+        <dt>Display</dt>
+        <dd>Refresh rate, and the lowest rate on battery if you want it.</dd>
+        <dt>Optional driver</dt>
+        <dd>Seal needs no driver. If you want one, a click in Settings installs <a href="https://pawnio.eu">PawnIO</a>, open source, signed, and the same driver FanControl and LibreHardwareMonitor install. With it Seal reads the CPU's own temperature instead of whichever sensor Windows exposes, which is the fix for boards that report a flat 28&deg;, along with the power limits and the reason the chip is holding back. On boards whose firmware refuses fan levels it sets them through the embedded controller instead. Removable from the same row, any time.</dd>
+        <dt>Live</dt>
+        <dd>CPU and GPU temperature, package watts, fan speeds, load, clocks, chassis sensor, battery. CPU temperature on the tray icon.</dd>
+        <dt>Tray</dt>
+        <dd>Everything above without opening the window: modes, fan mode, power gain, refresh rate, GPU power, graphics, lighting, brightness and every switch.</dd>
+        <dt>OMEN key</dt>
+        <dd>Opens the panel, cycles modes, toggles max fan, or runs a command of your choice. OGH's key handler is stopped, reversibly.</dd>
+        <dt>Safety</dt>
+        <dd>A thermal guard forces max fan on a hot CPU, a hot chassis or stalled fans, and can be switched off. Fan levels between 1&nbsp;and 1800&nbsp;rpm are refused, because no fan holds them; 0 is allowed, which stops them.</dd>
+        <dt>Extras</dt>
+        <dd>Starts with Windows without a UAC prompt, Eco on battery, Windows power mode sync, hotkeys, an on-screen flash when a key changes something, and an update check that never installs anything for you.</dd>
+      </dl>
+
+    </section>
+
+    <!-- every screen, at one height so each keeps its own shape; three copies so the loop never shows a seam -->
+    <div class="strip" aria-label="The four pages of the Seal window">
+      <div class="strip-track">
+        <img src="home.png" width="920" height="1082" alt="The Home page: modes, live temperatures and fan speeds, power gain and a lighting preview.">
+        <img src="fans.png" width="920" height="1208" alt="The Fans page: Auto, Max, Curve and Manual, with a draggable seven-point curve.">
+        <img src="keyboard.png" width="1400" height="1038" alt="The Keyboard page: the board in its real zone colours, with hue and shade strips.">
+        <img src="settings.png" width="920" height="1280" alt="The Settings page: the OMEN key, power, display and app sections.">
+        <img src="home.png" width="920" height="1082" alt="" aria-hidden="true">
+        <img src="fans.png" width="920" height="1208" alt="" aria-hidden="true">
+        <img src="keyboard.png" width="1400" height="1038" alt="" aria-hidden="true">
+        <img src="settings.png" width="920" height="1280" alt="" aria-hidden="true">
+        <img src="home.png" width="920" height="1082" alt="" aria-hidden="true">
+        <img src="fans.png" width="920" height="1208" alt="" aria-hidden="true">
+        <img src="keyboard.png" width="1400" height="1038" alt="" aria-hidden="true">
+        <img src="settings.png" width="920" height="1280" alt="" aria-hidden="true">
+      </div>
+    </div>
+
+    <!-- 6. how it works -->
+    <section aria-labelledby="how">
+      <h2 id="how">How it works</h2>
+      <p>HP exposes a BIOS mailbox as the WMI class <code>hpqBIntM</code>. Seal uses the commands OGH uses: performance mode, max fan, fan levels, CPU+GPU power budget, GPU power, graphics mode, keyboard lighting, plus read-only queries. The OMEN key arrives as a WMI event (<code>hpqBEvnt</code>). Every byte and every measured firmware behaviour is written down in <a href="https://github.com/sahilneverdies/Seal/blob/main/docs/research.md">docs/research.md</a>.</p>
+      <ul class="chips">
+        <li><b>0x1A</b> mode</li>
+        <li><b>0x27</b> max fan</li>
+        <li><b>0x2E</b> fan levels</li>
+        <li><b>0x29</b> power budget</li>
+        <li><b>0x22</b> GPU power</li>
+        <li><b>0x52</b> graphics mode</li>
+        <li><b>0x20009</b> lighting</li>
+      </ul>
+      <p class="note">One executable, with a settings file and a log beside it. To remove it, turn off Start with Windows and Take over the OMEN key first, then delete the folder: those two are the only things Seal writes outside it.</p>
+    </section>
+
+    <!-- 7b. laptops -->
+    <section aria-labelledby="laptops">
+      <h2 id="laptops">Supported laptops</h2>
+      <p><b>Every OMEN and Victus laptop is supported.</b> Seal asks the firmware what generation it is and
+      drives it accordingly, hiding any control your firmware does not offer.</p>
+
+
+      <p class="note">A <b class="v">green</b> board id has been confirmed by its owner (<b id="nverified">17</b> so far).<br>
+      Every other board still runs, it has just not been
+      confirmed by a person yet. <a href="#verify">Help get yours verified</a>.</p>
+
+      <div class="tablewrap">
+      <table class="models">
+        <thead><tr><th>Model</th><th>Board ids</th><th class="st">Status</th></tr></thead>
+        <tbody>
+        <tr><td>OMEN Transcend 14 (2024)</td><td class="ids"><b class="v">8C58</b></td><td class="st v">(1/1) Verified</td></tr>
+        <tr><td>OMEN Transcend 14 (2025)</td><td class="ids">8E41</td><td class="st">Supported</td></tr>
+        <tr><td>OMEN Transcend 16 (2023&ndash;2025)</td><td class="ids"><b class="v">8BB3</b>, 8C3B, 8C4D</td><td class="st v">(1/3) Verified</td></tr>
+        <tr><td>OMEN 16 (2021&ndash;2022)</td><td class="ids">8A42, 8A43, <b class="v">8A4C</b>, 8A44, 8A4D</td><td class="st v">(1/5) Verified</td></tr>
+        <tr><td>OMEN 16 (2023&ndash;2025)</td><td class="ids">8BA9, 8BAA, <b class="v">8BAB</b>, <b class="v">8BCA</b>, <b class="v">8BCD</b>, <b class="v">8C76</b>, 8C77, 8C78, 8D24, 8D26, 8D2F, <b class="v">8E35</b></td><td class="st v">(5/12) Verified</td></tr>
+        <tr><td>OMEN MAX 16 (2025)</td><td class="ids">8D41, <b class="v">8D87</b>, 8D88</td><td class="st v">(1/3) Verified</td></tr>
+        <tr><td>OMEN 15 (2019, 15-dc / 15-dh)</td><td class="ids">8574, 8600</td><td class="st">Supported</td></tr>
+        <tr><td>OMEN 17 (2019, 17-cb0)</td><td class="ids">8603</td><td class="st">Supported</td></tr>
+        <tr><td>OMEN 15 (2020)</td><td class="ids">8A15</td><td class="st">Supported</td></tr>
+        <tr><td>OMEN 15 / 17 (2021)</td><td class="ids"><b class="v">8BAD</b></td><td class="st v">(1/1) Verified</td></tr>
+        <tr><td>OMEN 17 (17-db1xxx)</td><td class="ids"><b class="v">8E10</b></td><td class="st v">(1/1) Verified</td></tr>
+        <tr><td>HyperX OMEN 15-gb0xxx (2026)</td><td class="ids"><b class="v">8EEC</b></td><td class="st v">(1/1) Verified</td></tr>
+        <tr><td>OMEN 15 / 17, 2018&ndash;2021 generations</td><td class="ids">84DA, 84DB, 84DC, 8572, 8573, 8575, 8601, 8602, 8604, 8605, 8606, 8607, 860A, 8746, 8747, <b class="v">8748</b>, 8749, 874A, 8786, <b class="v">8787</b>, 8788, 878A, 878B, 878C, 87B5, 886B, 886C, 88C8, 88CB, 88D1, <b class="v">88D2</b>, 88F4, 88F5, 88F6, 88F7, 88FD, 88FE, 88FF, 8900, 8901, 8902, 8912, 8917, 8918, 8949, 894A, 89EB</td><td class="st v">(3/47) Verified</td></tr>
+        <tr><td>Victus 16 (2021&ndash;2023)</td><td class="ids">88F8, <b class="v">8A25</b></td><td class="st v">(1/2) Verified</td></tr>
+        <tr><td>Victus 15-fb0xxx</td><td class="ids">8A3D</td><td class="st">Supported</td></tr>
+        <tr><td>Victus 16-r0xxx</td><td class="ids"><b class="v">8BC2</b></td><td class="st v">(1/1) Verified</td></tr>
+        <tr><td>Victus 16 S / R (2023&ndash;2024)</td><td class="ids">8B2F, <b class="v">8BBE</b>, 8BD4, <b class="v">8BD5</b>, 8C99, 8C9C</td><td class="st v">(2/6) Verified</td></tr>
+        <tr><td>Other boards <code>hp-wmi</code> lists as OMEN</td><td class="ids">8DD6</td><td class="st">Supported</td></tr>
+        <tr><td>Victus 15 and 16, other models</td><td class="ids">88D9, 88DA, <b class="v">88EE</b>, <b class="v">8A26</b>, 8A3E, 8C2F, 8C30, 8C3F, 8D07, 8DCD, <b class="v">8DCF</b>, 8E5E</td><td class="st v">(3/12) Verified</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="note">Your board id is in Seal under Settings, or from <code>(Get-CimInstance Win32_BaseBoard).Product</code> in PowerShell. A board that is not in this table still runs, and most of the boards in it have no entry of their own either: Seal asks the firmware what it is and uses what it answers. The table is a reading aid, not the list of what the code knows.</p>
+
+      <h3 id="verify">Verify yours</h3>
+      <p>Try every control Seal gives you: the modes, the fan modes, power gain, GPU power, graphics switching and
+      the keyboard. If you installed the driver, say whether the CPU temperature looks right and whether the fans
+      still behave. Check nothing is stuck after you exit, then <b>Settings &rarr; Report Issue</b> and open a
+      <a href="https://github.com/sahilneverdies/Seal/issues/new?template=verify-laptop.yml">Verify my laptop</a> issue with what it copies.</p>
+
+      <p>Five minutes, and everyone on your board gets the tested profile.</p>
+
+      <h3>If something is wrong on your model</h3>
+      <ol>
+        <li><b>Settings &rarr; Report Issue.</b> Collects your model, board id, BIOS, system-design data and fan table, copies it, and opens a prefilled issue. No personal data.
+          <br>If Seal will not start, <code>tools\support-info.cmd</code> writes the same thing to a file.
+          <br>If the driver is the part that is wrong, <code>tools\drivertest.cmd</code> says why in one page.</li>
+        <li>Paste it in, and say what OGH does differently on your model. OGH's own log helps most, from a session where you clicked every mode: <code class="path">%LOCALAPPDATA%\Packages\AD2F1837.OMENCommandCenter_v10z8vjag6ke6\LocalCache\Local\HPOMEN\</code></li>
+        <li>A laptop is one entry in <a href="https://github.com/sahilneverdies/Seal/blob/main/src/Platform.cs">src/Platform.cs</a>. Nothing else in the app is model-specific.</li>
+      </ol>
+    </section>
+
+  </main>
+
+  <!-- 8. footer -->
+  <footer>
+    <p>While this has been tested extensively, it is still sending commands to your laptop's firmware. Use at your own risk.</p>
+    <p>OMEN is a trademark of HP Inc. This project is not affiliated with HP.</p>
+    <p><a href="https://github.com/sahilneverdies/Seal">Source on GitHub</a> &middot; <a href="https://github.com/sahilneverdies/Seal/blob/main/docs/laptops.md">Full laptop list</a></p>
+  </footer>
+
+</div>
+
+<script>
+/* Fill in the real version, asset size and star count. Static text stays if anything fails. */
+(function () {
+  if (!window.fetch) return;
+  var api = 'https://api.github.com/repos/sahilneverdies/Seal';
+  var get = function (url) {
+    return fetch(url, { headers: { Accept: 'application/vnd.github+json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); });
+  };
+  var set = function (id, text) {
+    var el = document.getElementById(id);
+    if (el && text) { el.textContent = text; }
+  };
+  get(api + '/releases/latest').then(function (d) {
+    var tag = (d.tag_name || '').trim();
+    if (tag) set('ver', tag.charAt(0) === 'v' ? tag : 'v' + tag);
+    var exe = (d.assets || []).filter(function (a) { return /\.exe$/i.test(a.name || ''); })[0];
+    // Over a megabyte, say megabytes: "1237 KB" is accurate and reads like a mistake.
+    if (exe && exe.size) {
+      var kb = exe.size / 1024;
+      set('size', kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.round(kb) + ' KB');
+    }
+  })['catch'](function () {});
+  get(api).then(function (d) {
+    var n = d.stargazers_count;
+    if (typeof n !== 'number') { return; }
+    var text = n.toLocaleString('en-US');
+    ['stars', 'starsNav'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) { return; }
+      el.textContent = text;
+      el.hidden = false;          // a repository with no stars yet shows the button without a count
+    });
+  })['catch'](function () {});
+
+  // The count comes from the table below rather than a number written into the sentence, because the sentence
+  // said "two" for a week after the fifth owner confirmed theirs.
+  (function () {
+    var n = document.querySelectorAll('table.models .ids b.v').length;
+    var el = document.getElementById('nverified');
+    if (!el || !n) { return; }
+    var words = ['no', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+                 'Eleven', 'Twelve'];
+    el.textContent = n < words.length ? words[n].toLowerCase() : String(n);
+  })();
+})();
+</script>
+
+</body>
+</html>

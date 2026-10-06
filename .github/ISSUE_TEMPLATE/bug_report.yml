@@ -1,0 +1,41 @@
+name: Bug report
+description: Something in Seal does not work
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Seal version
+      description: Settings, bottom of the page, or the file properties of Seal.exe
+      placeholder: v2.0
+    validations:
+      required: true
+  - type: input
+    id: machine
+    attributes:
+      label: Model and board id
+      description: Both are in Settings
+      placeholder: OMEN Transcend 14, board 8C58
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: seal.log
+      description: The file sits beside Seal.exe; Settings has a Log link that opens it. The last hundred lines are usually enough.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: OMEN Gaming Hub is not running at the same time
+        - label: I am running Seal as administrator (the title bar does not say DEMO)
+        - label: The optional driver is installed (Settings &rarr; Driver). If it is, and the problem is a temperature or a fan, please attach tools\drivertest.txt as well

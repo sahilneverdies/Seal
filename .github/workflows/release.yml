@@ -1,0 +1,63 @@
+name: Release
+
+# Push a tag like v1.0 and this builds Seal with the C# compiler that ships inside Windows
+# (the same build.cmd you run locally) and attaches the binaries to a GitHub release.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        shell: cmd
+        run: build.cmd
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $tag = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME } else { 'dev' }
+          New-Item -ItemType Directory dist | Out-Null
+          New-Item -ItemType Directory dist\Seal-$tag | Out-Null
+          Copy-Item Seal.exe, README.md, LICENSE dist\Seal-$tag\
+          # OFL 1.1 requires the notice and licence to accompany every copy of the font software,
+          # and the exe carries the fonts inside it.
+          New-Item -ItemType Directory dist\Seal-$tag\fonts | Out-Null
+          Copy-Item fonts\OFL.txt dist\Seal-$tag\fonts\
+          # LGPL-2.1 asks the same of the PawnIO modules embedded in the exe.
+          Copy-Item third_party dist\Seal-$tag\third_party -Recurse
+          Copy-Item preview dist\Seal-$tag\preview -Recurse
+          New-Item -ItemType Directory dist\Seal-$tag\tools | Out-Null
+          Copy-Item tools\*.cmd, tools\*.ps1, tools\omenprobe.exe dist\Seal-$tag\tools\
+          Copy-Item docs dist\Seal-$tag\docs -Recurse
+          Compress-Archive -Path dist\Seal-$tag -DestinationPath dist\Seal-$tag-win-x64.zip
+          Copy-Item Seal.exe dist\Seal.exe
+          Get-ChildItem dist
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Seal
+          path: dist/*.zip
+
+      - name: Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Seal.exe
+            dist/*.zip
+          generate_release_notes: true
+          # Created as a draft on purpose. Defender gives each published hash its own verdict, so a build is
+          # downloaded and scanned before anyone can reach it; publishing the draft afterwards keeps the release
+          # authored by the workflow that built it.
+          draft: true

@@ -1,0 +1,197 @@
+# Laptops
+
+Seal talks to the HP BIOS mailbox (`hpqBIntM`), which every OMEN and Victus laptop exposes. What differs
+between models is which commands the firmware answers and which bytes each performance mode wants. That is
+the only model-specific thing in the app, and it lives in one table: [`src/Platform.cs`](../src/Platform.cs).
+
+## The two states
+
+Every OMEN and Victus laptop is **supported**, and there is no "unsupported" list. A board nobody has ever seen
+still runs: Seal reads the firmware's own system-design data, works out which generation it is, and drives it
+with the mode bytes documented for that generation. Power, GPU and lighting appear only where the firmware
+answers for them. If it answers with nothing usable, Seal stays read-only and says so in the window.
+
+A model becomes **verified** once somebody has run the checklist below on that exact board and every control
+did what it says. Its settings are then fixed rather than worked out at run time.
+
+## The boards
+
+One table per firmware generation, because the generation is what decides the mode bytes. Marketing names
+are approximate: HP reuses a board across several SKUs, so the board id is the only thing that identifies a
+machine exactly.
+
+**A ✓ marks a board an owner has confirmed.** Everything else still runs, Seal reads the firmware's own
+system-design data and drives the board with the bytes for its generation, it has simply not been confirmed
+by a person yet. See [Verifying your laptop](#verifying-your-laptop), it takes five minutes.
+
+`8C58` is the reference machine: Core Ultra 9 185H + RTX 4070, checked byte for byte against OMEN Gaming Hub
+1101.2608, which is where the mode bytes, the fan curve and the GPU payloads in `src/Platform.cs` come from.
+
+### OMEN Transcend
+
+| Model | Board ids |
+|---|---|
+| OMEN Transcend 14 (2024) | `8C58` ✓ |
+| OMEN Transcend 14 (2025) | `8E41` |
+| OMEN Transcend 16 (2023–2025) | `8BB3` ✓, `8C3B`, `8C4D` |
+
+### OMEN 16 and OMEN MAX
+
+| Model | Board ids |
+|---|---|
+| OMEN 16 (2021–2022) | `8A42`, `8A43`, `8A44`, `8A4C` ✓, `8A4D` |
+| OMEN 16 (2023–2025) | `8BA9`, `8BAA`, `8BAB` ✓, `8BCA` ✓, `8BCD` ✓, `8C76` ✓, `8C77`, `8C78`, `8D24`, `8D26`, `8D2F`, `8E35` ✓ |
+| OMEN MAX 16 (2025) | `8D41`, `8D87` ✓, `8D88` |
+| Other boards `hp-wmi` lists as OMEN | `8DD6` |
+
+### OMEN 15 and OMEN 17
+
+| Model | Board ids |
+|---|---|
+| OMEN 15 (2019, 15-dc / 15-dh) | `8574`, `8600` |
+| OMEN 17 (2019, 17-cb0) | `8603` |
+| OMEN 15 (2020) | `8A15` |
+| OMEN 15 / 17 (2021) | `8BAD` ✓ |
+| OMEN 17 (17-db1xxx) | `8E10` ✓ |
+| HyperX OMEN 15-gb0xxx (2026) | `8EEC` ✓ |
+| OMEN 15 / 17, 2018–2021 generations | `84DA`, `84DB`, `84DC`, `8572`, `8573`, `8575`, `8601`, `8602`, `8604`, `8605`, `8606`, `8607`, `860A`, `8746`, `8747`, `8748` ✓, `8749`, `874A`, `8786`, `8787` ✓, `8788`, `878A`, `878B`, `878C`, `87B5`, `886B`, `886C`, `88C8`, `88CB`, `88D1`, `88D2` ✓, `88F4`, `88F5`, `88F6`, `88F7`, `88FD`, `88FE`, `88FF`, `8900`, `8901`, `8902`, `8912`, `8917`, `8918`, `8949`, `894A`, `89EB` |
+
+### Victus
+
+Victus firmware uses different mode bytes from OMEN: `0x00` default, `0x01` performance, `0x03` quiet. Seal
+writes those bytes only for the boards the Linux `hp-wmi` driver names, because that is the only place they
+are written down:
+
+| Model | Board ids | Mode bytes |
+|---|---|---|
+| Victus 16 (2021–2023) | `88F8`, `8A25` ✓ | from `hp-wmi` |
+| Victus 15-fb0xxx | `8A3D` | from `hp-wmi`, no quiet mode |
+| Victus 16-r0xxx | `8BC2` ✓ | OMEN bytes; `hp-wmi` lists it as OMEN despite the name |
+| Victus 16 S / R (2023–2024) | `8B2F`, `8BBE` ✓, `8BD4`, `8BD5` ✓, `8C99`, `8C9C` | from `hp-wmi`, no quiet mode |
+| Victus 15 and 16, other models | `88D9`, `88DA`, `88EE` ✓, `8A26` ✓, `8A3E`, `8C2F`, `8C30`, `8C3F`, `8D07`, `8DCD`, `8DCF` ✓, `8E5E` | from the firmware |
+
+"from the firmware" is the same path every unlisted OMEN takes: Seal asks the board which firmware generation
+it is and drives it with that generation's bytes. It works, and nobody has yet confirmed on a Victus 15 that
+the quiet mode is the byte we think it is. The kernel's own Victus 16-r0xxx entry takes OMEN bytes despite the
+name, so the badge on the lid does not decide this, only a readback from the machine does.
+
+`8A3D` is the exception and shows how this gets settled: it is a Victus 15-fb0xxx, and it reached `hp-wmi`
+in July 2026 because one owner ran the fan table query on theirs and sent the readback to the kernel list.
+Board `8C2F` is reported to be shared between the 15" and 16" chassis, so even a board id is not always one
+machine.
+
+### ASUS Gaming Laptops (ROG & TUF)
+
+ASUS laptops communicate through the ACPI `ASUS_WMI` interface (`root\wmi:ASUS_WMI`). Thermal modes map to ASUS Throttle Thermal Policy (Silent = `2`, Performance/Normal = `0`, Turbo = `1`), with support for Fan Boost, live RPM tachometers, GPU MUX switches, and CPU SPL/SPPT power limits.
+
+| Family | Models | Board / Product IDs |
+|---|---|---|
+| **ROG Zephyrus** | G14, G15, G16, M16, Duo | `GA401`, `GA402`, `GA403`, `GA502`, `GA503`, `GU603`, `GU604`, `GU605`, `GX550`, `GX551`, `GX650` |
+| **ROG Strix & SCAR** | Strix G15/G16/G17, SCAR 15/16/17/18 | `G512`, `G513`, `G533`, `G614`, `G634`, `G712`, `G713`, `G733`, `G814`, `G834` |
+| **ROG Flow** | Flow X13, Z13, X16 | `GV301`, `GV302`, `GZ301`, `GV601` |
+| **TUF Gaming** | TUF A15/A16/A17, TUF F15/F16/F17/Dash | `FA506`, `FA507`, `FA617`, `FA706`, `FA707`, `FX506`, `FX507`, `FX607`, `FX706`, `FX707`, `FX516`, `FX517` |
+| **Other ASUS Models** | All other ASUS gaming laptops | Dynamic profile built from `ASUS_WMI` |
+
+### Acer Gaming Laptops (Predator & Nitro)
+
+Acer laptops communicate through Acer Gaming WMI (`root\wmi:Acer_WMIData` / `Acer_WMI_Interface`) and Embedded Controller registers. Thermal profiles map to Quiet (`0`), Default/Normal (`1`), and Extreme/Turbo (`2`), with CoolBoost max fan support.
+
+| Family | Models | Board / Product IDs |
+|---|---|---|
+| **Predator Helios** | Helios 16, 18, 300, 500, 700, Neo 16 | `PH16`, `PH18`, `PH315`, `PH317`, `PH517`, `PH717` |
+| **Predator Triton** | Triton 14, 16, 17, 300, 500 | `PT14`, `PT16`, `PT17`, `PT314`, `PT315`, `PT515`, `PT516` |
+| **Nitro Series** | Nitro 5, Nitro 16, Nitro 17, Nitro V 15/16 | `AN515`, `AN517`, `AN16`, `AN17`, `ANV15`, `ANV16` |
+| **Other Acer Models** | All other Acer gaming laptops | Dynamic profile built from Acer WMI & EC |
+
+### A note on v0 boards
+
+The v0 byte set has one default (`0x00`), one performance (`0x01`) and one cool (`0x02`), there is no
+separate low-power byte, so **Eco and Balanced are the same byte** and only Performance behaves differently.
+This is how the firmware is documented, not a bug, and `hp-wmi` maps low power to default on these boards for
+the same reason. Turning on **quieter Eco** in Settings makes Eco send `0x02` instead, which does differ.
+
+Board `8EEC` is a 2026 machine that still reports v0, so this is not only an old-laptop concern.
+
+## Finding your board id
+
+Open Seal and look at the top right of **Settings**, or run:
+
+```
+(Get-CimInstance Win32_BaseBoard).Product
+```
+
+## Verifying your laptop
+
+This takes about five minutes and it is the most useful thing you can contribute.
+
+1. **Modes.** Switch Eco → Balanced → Performance. The fans should audibly change within a few seconds, and
+   the chassis reading on the Home page should drift. If nothing changes on any mode, say so.
+2. **Fans.** Try Max (both fans should go loud), then Manual (set 50%, the reading should land near half of
+   your maximum), then Curve (drag a point up, the fans should follow within one ramp delay), then Auto.
+3. **Power gain.** If the row is there, move it to +15 W and check that nothing throttles or resets.
+4. **GPU power.** If the row is there, try each of Base / Boost / Max.
+5. **Graphics.** If your machine offers Discrete or iGPU only, *do not* switch it unless you are willing to
+   restart. If you do, confirm it comes back correctly.
+6. **Lighting.** If your keyboard lights, check that the zones in the app match the zones on the keyboard,
+   and that Static, Breathe, Cycle and Wave all do something.
+7. **Driver (optional, but the most useful single thing on a new board).** Settings → Driver → Install. Then run
+   `tools\drivertest.cmd`. It says whether the CPU's own registers answer on your chip, and whether your
+   embedded controller is laid out the way the map expects, the line to look for is `ec fan rpm` beside
+   `mailbox 0x2D`, which should agree within a few percent. Attach `tools\drivertest.txt` too. Nothing is
+   written to your EC either way; the check is read-only.
+8. **Exit.** Close Seal and confirm the fans return to the firmware's own behaviour within two minutes and
+   nothing is stuck.
+
+Then run:
+
+```
+tools\support-info.cmd
+```
+
+and open a [Verify my laptop](https://github.com/sahilneverdies/Seal/issues/new?template=verify-laptop.yml) issue
+with `tools\support-info.txt` attached and a line per step above. The file contains the model, board id, BIOS
+version, the firmware's system-design bytes, the fan table and the OMEN key event id. No personal data, no
+serial numbers.
+
+## If your keyboard lights per key
+
+HP's firmware lighting interface answers on these boards and drives nothing at all, so Seal uses the
+keyboard's own HID lighting interface instead. That part is written against a published standard but is
+**unverified**: nobody working on Seal has a per-key machine. Run this, which writes nothing and changes
+nothing:
+
+```
+Seal.exe --lamps
+```
+
+and open an issue with what it prints. It reports how many lamps your keyboard has, where each one is, and
+which key each one lights. That is everything needed to confirm the feature works.
+
+## If a control is wrong on your model
+
+Open a [New laptop support](https://github.com/sahilneverdies/Seal/issues/new?template=new-laptop-support.yml) issue
+with the same file, what OMEN Gaming Hub shows for the same control, and, if you can get it, OGH's own
+background log from a session where you clicked every mode:
+
+```
+%LOCALAPPDATA%\Packages\AD2F1837.OMENCommandCenter_v10z8vjag6ke6\LocalCache\Local\HPOMEN\
+```
+
+That log is what made the Transcend 14 profile exact, and it is the fastest route to an exact profile for any
+other model.
+
+## Adding a laptop in code
+
+A laptop is one entry in `Platforms.Known` in [`src/Platform.cs`](../src/Platform.cs):
+
+```csharp
+new PlatformProfile {
+    Name = "HP OMEN 16 (2023, 16-wf0xxx)",
+    Boards = new[] { "8BAA" },
+    Notes  = "Verified 2026-09-10 against OGH 1101.x logs."
+}
+```
+
+Everything else (fan ranges, mode bytes, which features exist) either has a sane default on
+`PlatformProfile` or is read from the firmware at run time. Override only what the evidence says is
+different, and put the evidence in `Notes`.
