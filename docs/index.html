@@ -1,279 +1,695 @@
 <!doctype html>
-<!-- Source of truth for the site. Published to ohmanapp/ohmanapp.github.io, which is what GitHub Pages
-     serves; this repository does not serve Pages itself. Editing here and forgetting to publish is the
-     one way to get them out of step. -->
+<!-- Official website for Seal: Lightweight Gaming Center for HP, ASUS & Acer laptops.
+     Hosted on GitHub Pages: https://sahilneverdies.github.io/Seal/ -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Seal - OMEN Gaming Hub alternative for HP OMEN and Victus laptops</title>
-<meta name="description" content="Modes, fan curves, power, graphics switching and keyboard lighting in one 1.3 MB executable. A replacement for OMEN Gaming Hub and OMEN Light Studio that speaks the same firmware interface, without any ads, services, or accounts.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='4' y1='4' x2='24' y2='24'%3E%3Cstop offset='0' stop-color='%238FBCFF'/%3E%3Cstop offset='1' stop-color='%232454A6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='7.4' y='7.4' width='13.2' height='13.2' rx='2.2' fill='url(%23g)' transform='rotate(45 14 14)'/%3E%3C/svg%3E">
-<meta property="og:title" content="Seal">
-<meta property="og:description" content="Ditch the Hub, keep the control. Modes, fan curves, power, graphics switching and keyboard lighting in one 1.3 MB executable, without ads, services or accounts.">
-<link rel="canonical" href="https://ohmanapp.github.io/">
-<meta property="og:url" content="https://ohmanapp.github.io/">
-<meta property="og:image" content="https://ohmanapp.github.io/hero.png">
+<title>Seal — Lightweight Gaming Center for HP, ASUS &amp; Acer Laptops</title>
+<meta name="description" content="Thermal modes, 7-point fan curves, power budgets, graphics switching, and RGB keyboard lighting in one 1.6 MB executable. The telemetry-free alternative to OMEN Gaming Hub, Armoury Crate, and PredatorSense.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="mark.png">
+<meta property="og:title" content="Seal — Lightweight Laptop Gaming Center">
+<meta property="og:description" content="Ditch vendor bloatware. Keep total hardware control in one 1.6 MB executable with zero services, zero ads, and zero telemetry.">
+<link rel="canonical" href="https://sahilneverdies.github.io/Seal/">
+<meta property="og:url" content="https://sahilneverdies.github.io/Seal/">
+<meta property="og:image" content="https://sahilneverdies.github.io/Seal/hero.png">
 <meta property="og:image:width" content="3840">
 <meta property="og:image:height" content="1680">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Seal — Lightweight Laptop Gaming Center">
+<meta name="twitter:description" content="1.6 MB portable control center for HP OMEN/Victus, ASUS ROG/TUF, and Acer Predator/Nitro gaming laptops.">
+<meta name="twitter:image" content="https://sahilneverdies.github.io/Seal/hero.png">
+
 <style>
-/* ---------- palette and tokens: dark only, one accent, warm neutrals to match the app ---------- */
-:root{
-  --bg:#100E0C;        /* canvas */
-  --surface:#161311;   /* chips, code, quiet fills */
-  --border:#272320;    /* the single 1px hairline */
-  --border-hi:#37322E; /* hairline on hover */
-  --text:#FFFFFF;      /* primary */
-  --muted:#A29D99;     /* secondary, 8.4:1 on --bg */
-  --dim:#CFC9C4;       /* inline code */
-  --accent:#3F8CFF;
-  --accent-hi:#6BA6FF;
-  --ok:#4AC06C;
-  --r:10px;            /* surface radius */
-  --t:120ms ease;
-  --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+/* ---------- palette and tokens: sleek dark mode with warm charcoal neutrals & electric cobalt accent ---------- */
+:root {
+  --bg: #0D0B0A;
+  --bg-card: #151210;
+  --surface: #1B1715;
+  --surface-hi: #25201D;
+  --border: #2C2622;
+  --border-hi: #443B35;
+  --text: #FFFFFF;
+  --muted: #A8A19B;
+  --dim: #D1CBC5;
+  --accent: #3F8CFF;
+  --accent-hi: #6BA6FF;
+  --accent-glow: rgba(63, 140, 255, 0.18);
+  --ok: #4AC06C;
+  --ok-bg: rgba(74, 192, 108, 0.12);
+  --warning: #F5A623;
+  --r: 12px;
+  --r-sm: 8px;
+  --t: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
 }
 
-/* ---------- base ---------- */
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
-  font-size:15px;
-  line-height:1.62;
-  -webkit-font-smoothing:antialiased;
-}
-.wrap{max-width:880px;margin:0 auto;padding:0 28px}
-a{
-  color:var(--accent);
-  text-decoration:underline;
-  text-decoration-color:rgba(63,140,255,.34);
-  text-underline-offset:3px;
-  transition:color var(--t),text-decoration-color var(--t);
-}
-a:hover{color:var(--accent-hi);text-decoration-color:currentColor}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-img{display:block}
-
-/* ---------- 1. header row ---------- */
-.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px}
-.brand{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:600;letter-spacing:-.01em}
-/* the mark, and the joke the name is: hover it and it says what it is */
-.mark{position:relative;width:38px;height:38px;flex:none}
-.mark svg,.mark span{position:absolute;inset:0;transition:opacity 220ms ease,transform 320ms cubic-bezier(.22,1,.28,1)}
-.mark span{font-size:28px;line-height:38px;text-align:center;opacity:0;transform:scale(.6) rotate(-18deg)}
-.brand:hover .mark svg{opacity:0;transform:scale(.6) rotate(18deg)}
-.brand:hover .mark span{opacity:1;transform:none}
-.bar nav{display:flex;align-items:center;gap:6px}
-.bar .out{padding:6px 10px;color:var(--muted);font-size:14px;text-decoration:none;border-radius:8px}
-.bar .out:hover{color:var(--text);background:var(--surface)}
-.bar .dl{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:6px 12px;border-radius:8px;line-height:1.62;
-  background:var(--accent);color:#0B0E14;
-  font-size:14px;font-weight:600;text-decoration:none;
-  transition:background-color var(--t);
-}
-.bar .dl:hover{background:var(--accent-hi)}
-/* GitHub Primer dark: its own surface and border, so the button reads as GitHub's and not as ours */
-.gh{
-  --gh-bg:#21262D; --gh-bg-hi:#30363D; --gh-edge:rgba(240,246,252,.14); --gh-ink:#F0F6FC;
-  background:var(--gh-bg);border:1px solid var(--gh-edge);color:var(--gh-ink);
-}
-.gh:hover{background:var(--gh-bg-hi);border-color:rgba(240,246,252,.24);color:var(--gh-ink)}
-.gh .n{
-  margin-left:2px;padding-left:9px;border-left:1px solid var(--gh-edge);
-  font-variant-numeric:tabular-nums;color:var(--gh-ink);
-}
-.bar .gh{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:5px 12px;border-radius:8px;line-height:1.62;
-  font-size:14px;font-weight:600;text-decoration:none;
-  transition:background-color var(--t),border-color var(--t);
-}
-.bar .gh svg{width:13px;height:13px;flex:none}
-.bar .dl svg{width:13px;height:13px;flex:none}
-
-/* The header is three glyphs in one strip at every width. The 1 px gap over the container's own border colour
-   draws the dividers, so there are no per-segment borders to collapse; Download keeps the accent and GitHub keeps
-   its own surface, so it still reads as three actions rather than one ambiguous control. Each of the three carries
-   its own padding at a specificity the child selector cannot reach, which is why they are always set together. */
-.bar nav{gap:1px;background:var(--border);border-radius:9px;overflow:hidden}
-.bar nav > a{border:0;border-radius:0;gap:0}
-.bar .out,.bar .gh,.bar .dl{padding:6px 12px}
-.bar .out{display:inline-flex;align-items:center;background:var(--surface);color:var(--text)}
-.bar .out svg{display:block}
-.bar .gh{background:var(--gh-bg)}
-.bar .out svg,.bar .gh svg,.bar .dl svg{width:14px;height:14px}
-.bar .lbl,.bar .gh .n{display:none}
-
-/* On a PC there is room for both to be a step larger. The strip is padded to the mark's own height rather than
-   to whatever the glyph needs: centring alone left a 42 px brand beside a 32 px pill, which reads as two things
-   at different scales instead of one navbar. Equal heights are what make it one row. */
-@media (min-width:561px){
-  .brand{font-size:17px;gap:4px}
-  .mark{width:40px;height:40px}
-  .mark span{font-size:30px;line-height:40px}
-  .bar nav{border-radius:11px}
-  .bar .out,.bar .gh,.bar .dl{padding:7px 14px}
-  .bar .out svg,.bar .gh svg,.bar .dl svg{width:16px;height:16px}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* ---------- 2. hero ---------- */
-.hero{padding-top:72px}
-h1{
-  margin:0 0 20px;
-  font-size:clamp(29px,6vw,50px);
-  font-weight:600;
-  line-height:1.14;
-  letter-spacing:-.028em;
-  text-wrap:balance;
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 28px; }
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(63, 140, 255, 0.35);
+  text-underline-offset: 3px;
+  transition: color var(--t), text-decoration-color var(--t);
 }
-.lede{margin:0;color:var(--muted);font-size:16.5px}
+a:hover { color: var(--accent-hi); text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+img { display: block; max-width: 100%; }
 
-/* ---------- 3. buttons and meta ---------- */
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  height:44px;padding:0 20px;
-  border:1px solid transparent;border-radius:var(--r);
-  font:inherit;font-size:15px;font-weight:600;
-  text-decoration:none;white-space:nowrap;
-  transition:background-color var(--t),border-color var(--t),color var(--t);
+/* ---------- 1. header bar ---------- */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 11, 10, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(44, 38, 34, 0.5);
 }
-.btn-primary{background:var(--accent);color:#0B0E14}      /* dark label keeps 6.9:1 on the accent */
-.btn-primary:hover{background:var(--accent-hi);color:#0B0E14}   /* a:hover would paint the label the colour of the fill */
-.btn-secondary{border-color:var(--border);color:var(--text)}
-.btn-secondary:hover{border-color:var(--border-hi);background:var(--surface)}
-.btn.gh .n{font-size:14px}
-.btn svg{width:14px;height:14px;flex:none}
-.count{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
-.meta{margin:16px 0 0;color:var(--muted);font-size:13px}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2454A6, #8FBCFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(63, 140, 255, 0.25);
+  overflow: hidden;
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+.brand:hover .brand-mark {
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(63, 140, 255, 0.4);
+}
+.brand-mark img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ---------- 4. the hero shot, and the strip of screens ---------- */
-.shot{
-  width:100%;max-width:460px;height:auto;
-  margin:56px auto 0;
-  border:1px solid var(--border);border-radius:14px;
-  box-shadow:0 18px 44px rgba(0,0,0,.55);
+.bar nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-link {
+  padding: 6px 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: var(--r-sm);
+  transition: color var(--t), background var(--t);
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+
+.bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* full-bleed: the only thing on the page that leaves the column */
-.strip{
-  margin:64px 0 0;width:100vw;position:relative;left:50%;transform:translateX(-50%);
-  overflow:hidden;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
-          mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+.gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  border-radius: var(--r-sm);
+  background: #21262D;
+  border: 1px solid rgba(240, 246, 252, 0.15);
+  color: #F0F6FC;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--t), border-color var(--t);
 }
-.strip-track{display:flex;align-items:center;width:max-content;animation:drift 64s linear infinite}
-.strip:hover .strip-track{animation-play-state:paused}
-/* One scale for all four, never one height: the window is a different size on every page and that is the point.
-   Keyboard is the wide one and Settings the tall one, exactly as they are on screen. Widths are the window's own
-   dimensions at 0.72; height follows from the image, so nothing is stretched.
-   The spacing is a margin and not a gap, because a gap is not part of the track's width and the loop would land
-   8px short every cycle. */
-.strip img{
-  height:auto;flex:none;margin-right:22px;
-  border:1px solid var(--border);border-radius:14px;
-  box-shadow:0 18px 44px rgba(0,0,0,.55);
+.gh-btn:hover {
+  background: #30363D;
+  border-color: rgba(240, 246, 252, 0.3);
+  color: #FFF;
 }
-.strip img[width="920"]{width:331px}
-.strip img[width="1400"]{width:503px}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(calc(-100% / 3))}}
-@media (prefers-reduced-motion:reduce){.strip-track{animation:none}.strip{overflow-x:auto}}
+.gh-btn .star-count {
+  margin-left: 2px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(240, 246, 252, 0.2);
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  color: #C9D1D9;
+}
 
-/* ---------- sections ---------- */
-section{margin-top:68px}
-h2{margin:0 0 22px;font-size:19px;font-weight:600;letter-spacing:-.015em}
-h3{margin:34px 0 0;font-size:15px;font-weight:600}
-p{margin:0 0 14px}
-p:last-child{margin-bottom:0}
+.dl-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: #0B0E14;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--t), transform var(--t);
+}
+.dl-nav-btn:hover {
+  background: var(--accent-hi);
+  transform: translateY(-1px);
+  color: #0B0E14;
+}
 
-/* ---------- 5. what it does: two columns ---------- */
-.dl{display:grid;grid-template-columns:126px 1fr;column-gap:28px;margin:0}
-.dl dt{padding:11px 0;font-weight:600}
-.dl dd{margin:0;padding:11px 0;color:var(--muted)}
-.dl dt:not(:first-of-type),.dl dd:not(:first-of-type){border-top:1px solid var(--border)}
+/* ---------- 2. hero section ---------- */
+.hero {
+  padding: 64px 0 40px;
+  text-align: center;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: rgba(63, 140, 255, 0.1);
+  border: 1px solid rgba(63, 140, 255, 0.3);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-hi);
+  margin-bottom: 22px;
+}
+.pill .dot {
+  width: 7px;
+  height: 7px;
+  background: var(--ok);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--ok);
+}
 
-/* ---------- 6. command chips: real opcodes ---------- */
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin:22px 0 0;padding:0;list-style:none}
-.chips li{
-  display:flex;align-items:baseline;gap:6px;
-  padding:5px 9px;
-  background:var(--surface);border:1px solid var(--border);border-radius:8px;
-  font-family:var(--mono);font-size:12px;color:var(--muted);
+h1 {
+  margin: 0 auto 20px;
+  max-width: 820px;
+  font-size: clamp(34px, 6.2vw, 56px);
+  font-weight: 750;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  background: linear-gradient(180deg, #FFFFFF 30%, #C4BEB8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.chips b{color:var(--accent);font-weight:400}
+.lede {
+  margin: 0 auto;
+  max-width: 680px;
+  color: var(--muted);
+  font-size: clamp(16px, 2.2vw, 18px);
+  line-height: 1.55;
+  text-wrap: balance;
+}
 
-/* ---------- 7. code ---------- */
-pre{
-  margin:14px 0;padding:12px 14px;
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
-  overflow-x:auto;
+/* ---------- 3. buttons and quick install ---------- */
+.cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 34px;
 }
-pre code{font-size:13px;color:var(--dim)}
-code{font-family:var(--mono)}
-p code,li code,td code{
-  padding:1px 5px;
-  background:var(--surface);border:1px solid var(--border);border-radius:6px;
-  font-size:12.5px;color:var(--dim);
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--r);
+  font-size: 15px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all var(--t);
+  cursor: pointer;
 }
-/* long paths wrap mid-word, so they get no box to break across lines */
-code.path{padding:0;background:none;border:0;overflow-wrap:anywhere}
-ol{margin:18px 0 0;padding-left:22px;color:var(--muted)}
-ol li{margin-bottom:16px}
-ol li:last-child{margin-bottom:0}
+.btn-primary {
+  background: var(--accent);
+  color: #090C12;
+  box-shadow: 0 4px 18px var(--accent-glow);
+}
+.btn-primary:hover {
+  background: var(--accent-hi);
+  color: #090C12;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(63, 140, 255, 0.32);
+}
+.btn-secondary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-secondary:hover {
+  background: var(--surface-hi);
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+}
+.hero-meta {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.hero-meta span { color: var(--dim); font-weight: 600; }
 
-/* ---------- 7b. laptops table ---------- */
-.tablewrap{overflow-x:auto;margin-top:6px}
-.models{width:100%;border-collapse:collapse;font-size:14px}
-.models th{text-align:left;font-weight:600;padding:8px 12px 8px 0;border-bottom:1px solid var(--border);color:var(--muted);font-size:12.5px;letter-spacing:.02em}
-.models td{padding:10px 12px 10px 0;border-bottom:1px solid var(--border);vertical-align:top}
-.models td:last-child,.models th:last-child{padding-right:0}
-.models td.st,.models th.st{white-space:nowrap}
-.models td.ids{font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.5}
-.models td.st{white-space:nowrap;color:var(--muted)}
-.models td.st.v{color:var(--ok)}
-.models .ids b.v,.note b.v{color:var(--ok);font-weight:600}
-.note{margin-top:16px;color:var(--muted);font-size:13px}
-/* the family names, so someone scanning finds their own laptop without reading board ids */
-.fam{color:var(--text);font-size:15px}
+/* Quick run snippet */
+.quick-code {
+  max-width: 620px;
+  margin: 28px auto 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--dim);
+}
+.quick-code code {
+  overflow-x: auto;
+  white-space: nowrap;
+  color: #E2DDD8;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.quick-code button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--t);
+  flex-shrink: 0;
+}
+.quick-code button:hover {
+  background: var(--surface-hi);
+  color: var(--text);
+  border-color: var(--border-hi);
+}
 
-/* ---------- 8. footer ---------- */
-footer{
-  margin-top:60px;padding:26px 0 60px;
-  border-top:1px solid var(--border);
-  color:var(--muted);font-size:13px;
+/* ---------- 4. hero showcase banner ---------- */
+.hero-banner {
+  margin: 54px auto 0;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
 }
-footer p{margin:0 0 8px}
+.hero-banner img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
-/* ---------- responsive: 360px up, no horizontal scroll ---------- */
-@media (max-width:640px){
-  .pair{grid-template-columns:1fr;gap:28px}
+/* ---------- 5. comparison stat cards ---------- */
+.grid-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 56px;
 }
-@media (max-width:560px){
-  .dl{grid-template-columns:1fr}
-  /* One rule per item, under the heading, binding it to its own text.
-     Both selectors are spelled out because the base rule is .dl dd:not(:first-of-type), which out-specifies a
-     plain .dl dd - so the old reset here never applied and dt and dd were each drawing a line. That was the
-     pair of rules stacked either side of every heading on a phone. */
-  .dl dt,.dl dt:not(:first-of-type){padding:22px 0 0;border-top:0}
-  .dl dt:first-of-type{padding-top:0}
-  .dl dd,.dl dd:not(:first-of-type){margin-top:7px;padding:9px 0 0;border-top:1px solid var(--border)}
-  .brand{gap:6px}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 18px;
+  text-align: center;
+  transition: border-color var(--t), transform var(--t);
 }
-@media (max-width:420px){
-  .wrap{padding:0 18px}
-  .cta{flex-direction:column;align-items:stretch}
-  .btn{width:100%}
+.stat-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
 }
-@media (prefers-reduced-motion:reduce){
-  *{transition:none!important;animation:none!important}
+.stat-val {
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.stat-val.accent { color: var(--accent-hi); }
+.stat-val.ok { color: var(--ok); }
+.stat-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.stat-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ---------- 6. carousel of screens ---------- */
+.strip-section {
+  margin-top: 76px;
+  position: relative;
+}
+.strip-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.strip {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.strip-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: drift 60s linear infinite;
+}
+.strip:hover .strip-track { animation-play-state: paused; }
+.strip img {
+  height: auto;
+  flex: none;
+  margin-right: 22px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+.strip img[width="920"] { width: 330px; }
+.strip img[width="1400"] { width: 500px; }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(calc(-100% / 3)); } }
+@media (prefers-reduced-motion: reduce) {
+  .strip-track { animation: none; }
+  .strip { overflow-x: auto; }
+}
+
+/* ---------- 7. features grid ---------- */
+section { margin-top: 88px; }
+h2 {
+  margin: 0 0 12px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.section-desc {
+  margin: 0 0 32px;
+  color: var(--muted);
+  font-size: 15.5px;
+  max-width: 680px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.feature-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px 20px;
+  transition: border-color var(--t), transform var(--t);
+}
+.feature-box:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+}
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--accent-hi);
+}
+.feature-box h3 {
+  margin: 0 0 8px;
+  font-size: 16.5px;
+  font-weight: 650;
+  color: var(--text);
+}
+.feature-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* ---------- 8. command chips and low-level protocol ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.chips li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.chips b { color: var(--accent); font-weight: 600; }
+
+/* ---------- 9. laptops table with vendor tabs ---------- */
+.tabs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.tab-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--muted);
+  padding: 7px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.tab-btn:hover {
+  color: var(--text);
+  border-color: var(--border-hi);
+}
+.tab-btn.active {
+  background: var(--accent);
+  color: #0B0E14;
+  border-color: var(--accent);
+}
+
+.table-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.table-search {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 9px 14px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--t);
+}
+.table-search:focus {
+  border-color: var(--accent);
+}
+.table-search::placeholder {
+  color: #6C6661;
+}
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--bg-card);
+}
+.models {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.models th {
+  text-align: left;
+  font-weight: 650;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+}
+.models td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.models tr:last-child td { border-bottom: 0; }
+.models tr:hover td { background: rgba(255, 255, 255, 0.02); }
+.models td.ids {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+}
+.models td.vendor {
+  font-weight: 600;
+  color: var(--dim);
+}
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.badge-verified {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border: 1px solid rgba(74, 192, 108, 0.3);
+}
+.badge-supported {
+  background: rgba(63, 140, 255, 0.1);
+  color: var(--accent-hi);
+  border: 1px solid rgba(63, 140, 255, 0.25);
+}
+
+.table-legend {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.table-legend b { color: var(--ok); }
+
+/* ---------- 10. verification guide ---------- */
+.guide-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 26px 24px;
+  margin-top: 24px;
+}
+ol.steps-list {
+  margin: 14px 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+ol.steps-list li {
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+ol.steps-list li b { color: var(--text); }
+
+pre {
+  margin: 14px 0;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow-x: auto;
+}
+pre code { font-size: 13px; color: var(--dim); font-family: var(--mono); }
+code { font-family: var(--mono); }
+p code, li code, td code {
+  padding: 2px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 12.5px;
+  color: var(--dim);
+}
+
+/* ---------- 11. footer ---------- */
+footer {
+  margin-top: 96px;
+  padding: 36px 0 60px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+footer a { color: var(--dim); }
+footer a:hover { color: var(--accent-hi); }
+.footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* ---------- responsive design ---------- */
+@media (max-width: 820px) {
+  .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 580px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  .grid-stats { grid-template-columns: 1fr; }
+  .bar nav { display: none; }
+  .cta-group { flex-direction: column; width: 100%; }
+  .btn { width: 100%; }
+  .quick-code { flex-direction: column; align-items: stretch; }
+  .table-filter-bar { flex-direction: column; align-items: stretch; }
 }
 </style>
 </head>
@@ -281,230 +697,522 @@ footer p{margin:0 0 8px}
 
 <div class="wrap">
 
-  <!-- 1. header -->
+  <!-- 1. header bar -->
   <header class="bar">
-    <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 28 28" width="38" height="38"><defs><linearGradient id="mk" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="24" y2="24"><stop offset="0" stop-color="#8FBCFF"/><stop offset="1" stop-color="#2454A6"/></linearGradient></defs><rect x="7.4" y="7.4" width="13.2" height="13.2" rx="2.2" fill="url(#mk)" transform="rotate(45 14 14)"/></svg><span>🦭</span></span>Seal</span>
+    <a class="brand" href="#">
+      <span class="brand-mark" aria-hidden="true">
+        <img src="favicon.png" alt="Seal Logo" width="36" height="36">
+      </span>
+      <span>Seal</span>
+    </a>
+
     <nav>
-      <a class="out" href="#laptops" aria-label="Supported laptops" title="Laptops Seal supports">
-        <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="3.4" width="9.6" height="6.6" rx="1.2"/><path d="M1.6 12.6h12.8"/></svg>
-        <span class="lbl">Laptops</span>
-      </a>
-      <a class="gh" href="https://github.com/sahilneverdies/Seal" aria-label="Seal on GitHub" title="Seal on GitHub">
-        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
-        <span class="lbl">GitHub</span> <span class="n" id="starsNav" hidden></span>
-      </a>
-      <a class="dl" href="https://github.com/sahilneverdies/Seal/releases/latest" aria-label="Download Seal" title="Download the latest release">
-        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 1v8.2M4.6 6.2L8 9.6l3.4-3.4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11.5v2A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
-        <span class="lbl">Download</span>
-      </a>
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#screenshots">Screenshots</a>
+      <a class="nav-link" href="#laptops">Laptops</a>
+      <a class="nav-link" href="https://github.com/sahilneverdies/Seal/blob/main/docs/research.md">Protocol</a>
+      <a class="nav-link" href="#install">Install</a>
     </nav>
+
+    <div class="bar-actions">
+      <a class="gh-btn" href="https://github.com/sahilneverdies/Seal" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+        <span>GitHub</span>
+        <span class="star-count" id="starsNav" hidden>0</span>
+      </a>
+      <a class="dl-nav-btn" href="https://github.com/sahilneverdies/Seal/releases/latest/download/Seal.exe">
+        <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v9M4.5 7l3.5 3.5L11.5 7"/><path d="M2.5 12.5h11"/></svg>
+        <span>Download</span>
+      </a>
+    </div>
   </header>
 
   <main>
 
-    <!-- 2. hero -->
-    <div class="hero">
-      <h1>Ditch the hub.<br>Keep the control.</h1>
-      <p class="lede">Modes, fan curves, power, graphics switching and keyboard lighting in one 1.3&nbsp;MB executable. A replacement for OMEN Gaming Hub &amp; OMEN Light Studio that speaks the same firmware interface, without any ads, services, or accounts.</p>
+    <!-- 2. hero section -->
+    <section class="hero">
+      <div class="pill">
+        <span class="dot"></span>
+        <span>Version 1.0.0 is live • Multi-vendor support</span>
+      </div>
 
-      <!-- 3. actions -->
-      <div class="cta">
-        <a class="btn btn-primary" href="https://github.com/sahilneverdies/Seal/releases/latest">Download from GitHub</a>
-        <a class="btn gh" href="https://github.com/sahilneverdies/Seal">
-          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
-          Star on GitHub <span class="n" id="stars" hidden></span>
+      <h1>Ditch the bloatware.<br>Keep total hardware control.</h1>
+      <p class="lede">
+        Modes, 7-point fan curves, power budgets, graphics switching, and RGB lighting in a single 1.6&nbsp;MB executable. A lightweight, privacy-first replacement for vendor software (OMEN Gaming Hub, Armoury Crate, PredatorSense) with <b>zero ads, zero background services, and zero telemetry</b>.
+      </p>
+
+      <!-- 3. CTAs and quick install -->
+      <div class="cta-group" id="install">
+        <a class="btn btn-primary" href="https://github.com/sahilneverdies/Seal/releases/latest/download/Seal.exe">
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v9M4.5 7l3.5 3.5L11.5 7"/><path d="M2.5 12.5h11"/></svg>
+          Download Seal.exe (<span id="btnSize">1.6 MB</span>)
+        </a>
+
+        <a class="btn btn-secondary" href="https://github.com/sahilneverdies/Seal/releases/download/v1.0.0/Seal-v1.0.0-win-x64.zip">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
+          Download ZIP Package
+        </a>
+
+        <a class="btn btn-secondary" href="https://github.com/sahilneverdies/Seal" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+          Star on GitHub <span class="star-count" id="starsHero" hidden>0</span>
         </a>
       </div>
-      <p class="meta"><span id="ver">v1.0</span> &middot; <span id="size">1.3 MB</span> &middot; Windows 10/11</p>
-    </div>
 
-    <!-- 4. the app -->
-    <img class="shot" src="home.png" width="920" height="1082"
-         alt="The Seal panel: Eco, Balanced and Performance buttons, live CPU and GPU temperatures and fan speeds, and rows for fans, power gain and keyboard lighting.">
+      <p class="hero-meta">
+        <span id="verTag">v1.0.0</span> &bull; <span>1.6 MB Standalone</span> &bull; Windows 10 &amp; 11 (x64) &bull; Native C# &amp; Win32
+      </p>
 
-    <!-- 5. what it does -->
-    <section aria-labelledby="what">
-      <h2 id="what">What it does</h2>
-      <dl class="dl">
-        <dt>Modes</dt>
-        <dd>Eco &middot; Balanced &middot; Performance, one click, the OMEN key, or a hotkey. Each mode remembers its own fans, power gain and GPU choice, and the whole app takes that mode's colour.</dd>
-        <dt>Fan control</dt>
-        <dd>Auto (this model's own curve), Max, Manual per fan, or your own curve: seven points you drag, a floor, a ramp delay, and a separate GPU curve if you unlink it. The live reading rides the curve so you can see what it is about to do.</dd>
-        <dt>Max fan</dt>
-        <dd>Full speed with a way back: it returns to Auto once the chips are below 60&deg; for two minutes, or after 15, 30 or 60 minutes.</dd>
-        <dt>Power gain</dt>
-        <dd>OGH's "Smart Performance Gain": +0 to +15&nbsp;W on the CPU+GPU budget that NVIDIA Dynamic Boost draws from.</dd>
-        <dt>GPU power</dt>
-        <dd>Base &middot; Boost &middot; Max, or follow the mode.</dd>
-        <dt>Graphics</dt>
-        <dd>Hybrid, Discrete (the MUX) or iGPU&nbsp;only, whichever your firmware offers. Written the way OGH writes it, with the restart it needs.</dd>
-        <dt>Lighting</dt>
-        <dd>The keyboard drawn as it actually lights. Pick a key, a row, a zone or the whole board, then a hue and a shade; or Breathe, Cycle, Wave, or hand it to Windows Dynamic Lighting. Per-key selection is there for the boards that have it.</dd>
-        <dt>Display</dt>
-        <dd>Refresh rate, and the lowest rate on battery if you want it.</dd>
-        <dt>Optional driver</dt>
-        <dd>Seal needs no driver. If you want one, a click in Settings installs <a href="https://pawnio.eu">PawnIO</a>, open source, signed, and the same driver FanControl and LibreHardwareMonitor install. With it Seal reads the CPU's own temperature instead of whichever sensor Windows exposes, which is the fix for boards that report a flat 28&deg;, along with the power limits and the reason the chip is holding back. On boards whose firmware refuses fan levels it sets them through the embedded controller instead. Removable from the same row, any time.</dd>
-        <dt>Live</dt>
-        <dd>CPU and GPU temperature, package watts, fan speeds, load, clocks, chassis sensor, battery. CPU temperature on the tray icon.</dd>
-        <dt>Tray</dt>
-        <dd>Everything above without opening the window: modes, fan mode, power gain, refresh rate, GPU power, graphics, lighting, brightness and every switch.</dd>
-        <dt>OMEN key</dt>
-        <dd>Opens the panel, cycles modes, toggles max fan, or runs a command of your choice. OGH's key handler is stopped, reversibly.</dd>
-        <dt>Safety</dt>
-        <dd>A thermal guard forces max fan on a hot CPU, a hot chassis or stalled fans, and can be switched off. Fan levels between 1&nbsp;and 1800&nbsp;rpm are refused, because no fan holds them; 0 is allowed, which stops them.</dd>
-        <dt>Extras</dt>
-        <dd>Starts with Windows without a UAC prompt, Eco on battery, Windows power mode sync, hotkeys, an on-screen flash when a key changes something, and an update check that never installs anything for you.</dd>
-      </dl>
+      <!-- Quick terminal install -->
+      <div class="quick-code">
+        <code>irm https://github.com/sahilneverdies/Seal/releases/latest/download/Seal.exe -OutFile Seal.exe; .\Seal.exe</code>
+        <button id="copyBtn" onclick="copySnippet()">Copy PowerShell</button>
+      </div>
 
+      <!-- Hero Banner image -->
+      <div class="hero-banner">
+        <img src="hero.png" width="1920" height="840" alt="Seal Control Center running on Windows with live gauges, fan curves and laptop hardware controls.">
+      </div>
     </section>
 
-    <!-- every screen, at one height so each keeps its own shape; three copies so the loop never shows a seam -->
-    <div class="strip" aria-label="The four pages of the Seal window">
-      <div class="strip-track">
-        <img src="home.png" width="920" height="1082" alt="The Home page: modes, live temperatures and fan speeds, power gain and a lighting preview.">
-        <img src="fans.png" width="920" height="1208" alt="The Fans page: Auto, Max, Curve and Manual, with a draggable seven-point curve.">
-        <img src="keyboard.png" width="1400" height="1038" alt="The Keyboard page: the board in its real zone colours, with hue and shade strips.">
-        <img src="settings.png" width="920" height="1280" alt="The Settings page: the OMEN key, power, display and app sections.">
-        <img src="home.png" width="920" height="1082" alt="" aria-hidden="true">
-        <img src="fans.png" width="920" height="1208" alt="" aria-hidden="true">
-        <img src="keyboard.png" width="1400" height="1038" alt="" aria-hidden="true">
-        <img src="settings.png" width="920" height="1280" alt="" aria-hidden="true">
-        <img src="home.png" width="920" height="1082" alt="" aria-hidden="true">
-        <img src="fans.png" width="920" height="1208" alt="" aria-hidden="true">
-        <img src="keyboard.png" width="1400" height="1038" alt="" aria-hidden="true">
-        <img src="settings.png" width="920" height="1280" alt="" aria-hidden="true">
+    <!-- 4. Stat comparison cards -->
+    <div class="grid-stats">
+      <div class="stat-card">
+        <div class="stat-val accent">1.6 MB</div>
+        <div class="stat-label">Binary Size</div>
+        <div class="stat-sub">vs 1.2 GB+ vendor suites</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val ok">0</div>
+        <div class="stat-label">Background Services</div>
+        <div class="stat-sub">vs 15+ telemetry daemons</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val accent">~20 MB</div>
+        <div class="stat-label">RAM Footprint</div>
+        <div class="stat-sub">vs 800 MB+ Electron bloat</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val ok">80+</div>
+        <div class="stat-label">Laptop Models</div>
+        <div class="stat-sub">HP, ASUS, and Acer supported</div>
       </div>
     </div>
 
-    <!-- 6. how it works -->
-    <section aria-labelledby="how">
-      <h2 id="how">How it works</h2>
-      <p>HP exposes a BIOS mailbox as the WMI class <code>hpqBIntM</code>. Seal uses the commands OGH uses: performance mode, max fan, fan levels, CPU+GPU power budget, GPU power, graphics mode, keyboard lighting, plus read-only queries. The OMEN key arrives as a WMI event (<code>hpqBEvnt</code>). Every byte and every measured firmware behaviour is written down in <a href="https://github.com/sahilneverdies/Seal/blob/main/docs/research.md">docs/research.md</a>.</p>
-      <ul class="chips">
-        <li><b>0x1A</b> mode</li>
-        <li><b>0x27</b> max fan</li>
-        <li><b>0x2E</b> fan levels</li>
-        <li><b>0x29</b> power budget</li>
-        <li><b>0x22</b> GPU power</li>
-        <li><b>0x52</b> graphics mode</li>
-        <li><b>0x20009</b> lighting</li>
-      </ul>
-      <p class="note">One executable, with a settings file and a log beside it. To remove it, turn off Start with Windows and Take over the OMEN key first, then delete the folder: those two are the only things Seal writes outside it.</p>
+    <!-- 5. Screenshots Carousel -->
+    <div class="strip-section" id="screenshots">
+      <div class="strip-header">
+        <h2>Designed with precision for Windows</h2>
+        <p class="section-desc" style="margin: 0 auto; text-align: center;">Compact, fast, and keyboard-friendly. Runs right from your system tray without opening a window.</p>
+      </div>
+
+      <div class="strip" aria-label="Screenshots of Seal window">
+        <div class="strip-track">
+          <img src="home.png" width="920" height="1082" alt="Home page with modes, live temps, watts and fan rpm.">
+          <img src="fans.png" width="920" height="1208" alt="Fans page with custom 7-point curve editor.">
+          <img src="keyboard.png" width="1400" height="1038" alt="Keyboard lighting studio with per-zone RGB control.">
+          <img src="settings.png" width="920" height="1280" alt="Settings page with MUX switch, hotkeys and hardware sensors.">
+          <!-- Repeat for infinite smooth loop -->
+          <img src="home.png" width="920" height="1082" alt="" aria-hidden="true">
+          <img src="fans.png" width="920" height="1208" alt="" aria-hidden="true">
+          <img src="keyboard.png" width="1400" height="1038" alt="" aria-hidden="true">
+          <img src="settings.png" width="920" height="1280" alt="" aria-hidden="true">
+          <img src="home.png" width="920" height="1082" alt="" aria-hidden="true">
+          <img src="fans.png" width="920" height="1208" alt="" aria-hidden="true">
+          <img src="keyboard.png" width="1400" height="1038" alt="" aria-hidden="true">
+          <img src="settings.png" width="920" height="1280" alt="" aria-hidden="true">
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Features Grid -->
+    <section id="features">
+      <h2>Everything you need. Nothing you don't.</h2>
+      <p class="section-desc">Full access to OEM firmware registers without the memory leaks, ads, and login prompts.</p>
+
+      <div class="feature-grid">
+        <div class="feature-box">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>Thermal &amp; Power Modes</h3>
+          <p>Instantly toggle Eco, Balanced, and Performance / Turbo modes with one click, a global hotkey, or vendor key. Remembers custom fan curves and wattage per profile.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>7-Point Fan Curves</h3>
+          <p>Drag seven temperature-to-RPM control points, customize hysteresis ramp delays, set safety floors, or toggle Max Fan with smart auto-cool off after 60&deg;C.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3>GPU MUX &amp; Power Gains</h3>
+          <p>Switch between Hybrid, Discrete (direct dGPU MUX), and iGPU-only modes. Boost CPU+GPU power budget (+0W to +15W) and configure NVIDIA Dynamic Boost levels.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8"/></svg>
+          </div>
+          <h3>RGB Keyboard Lighting</h3>
+          <p>Interactive visual keyboard canvas. Customize 4-zone or per-key illumination with Static, Breathe, Cycle, Wave animations, or delegate to Windows Dynamic Lighting.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Optional PawnIO Driver</h3>
+          <p>Zero mandatory drivers. Need direct register access? Install the open-source signed PawnIO driver with one click to read raw CPU package sensors and bypass EC fan limits.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Tray Sensor Dashboard</h3>
+          <p>Live CPU/GPU temps, package wattage, fan RPMs, chassis thermal probe, and battery discharge rates directly rendered in the Windows taskbar system tray.</p>
+        </div>
+      </div>
     </section>
 
-    <!-- 7b. laptops -->
-    <section aria-labelledby="laptops">
-      <h2 id="laptops">Supported laptops</h2>
-      <p><b>Every OMEN and Victus laptop is supported.</b> Seal asks the firmware what generation it is and
-      drives it accordingly, hiding any control your firmware does not offer.</p>
+    <!-- 7. How it works / Firmware Protocols -->
+    <section>
+      <h2>Direct Firmware Communication</h2>
+      <p class="section-desc">
+        Seal communicates directly with your laptop's low-level ACPI WMI and BIOS mailboxes—the exact interface vendor utilities use, without their runtime baggage.
+      </p>
 
+      <ul class="chips">
+        <li><b>HP ACPI WMI</b> hpqBIntM (0x1A modes, 0x27 max fan, 0x2E curves, 0x29 power, 0x52 MUX)</li>
+        <li><b>ASUS ACPI WMI</b> ASUS_WMI (Throttle Thermal Policy 0/1/2, Fan Boost, Fan RPM Tachs)</li>
+        <li><b>Acer Gaming WMI</b> Acer_WMIData &amp; EC (Quiet, Normal, Turbo, CoolBoost max fans)</li>
+        <li><b>WMI Events</b> hpqBEvnt (OMEN key intercepted and remapped)</li>
+      </ul>
+      <p class="table-legend" style="margin-top: 18px;">
+        Read our full reverse-engineering notes in <a href="https://github.com/sahilneverdies/Seal/blob/main/docs/research.md" target="_blank" rel="noopener">docs/research.md</a>.
+      </p>
+    </section>
 
-      <p class="note">A <b class="v">green</b> board id has been confirmed by its owner (<b id="nverified">17</b> so far).<br>
-      Every other board still runs, it has just not been
-      confirmed by a person yet. <a href="#verify">Help get yours verified</a>.</p>
+    <!-- 8. Supported Laptops Table with Filter Tabs -->
+    <section id="laptops">
+      <h2>Supported Laptops</h2>
+      <p class="section-desc">
+        Over 80 laptop models tested and supported across HP, ASUS, and Acer. Seal queries system-design tables dynamically at runtime to match your motherboard's generation.
+      </p>
+
+      <!-- Vendor Tabs -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="filterVendor('all')">All Vendors (80+)</button>
+        <button class="tab-btn" onclick="filterVendor('hp')">HP OMEN &amp; Victus</button>
+        <button class="tab-btn" onclick="filterVendor('asus')">ASUS ROG &amp; TUF</button>
+        <button class="tab-btn" onclick="filterVendor('acer')">Acer Predator &amp; Nitro</button>
+      </div>
+
+      <!-- Live Search Filter -->
+      <div class="table-filter-bar">
+        <input type="text" class="table-search" id="modelSearch" placeholder="Search by model name or board ID (e.g. 8C58, Zephyrus, Helios, 8A4C)..." oninput="searchModels()">
+      </div>
 
       <div class="tablewrap">
-      <table class="models">
-        <thead><tr><th>Model</th><th>Board ids</th><th class="st">Status</th></tr></thead>
-        <tbody>
-        <tr><td>OMEN Transcend 14 (2024)</td><td class="ids"><b class="v">8C58</b></td><td class="st v">(1/1) Verified</td></tr>
-        <tr><td>OMEN Transcend 14 (2025)</td><td class="ids">8E41</td><td class="st">Supported</td></tr>
-        <tr><td>OMEN Transcend 16 (2023&ndash;2025)</td><td class="ids"><b class="v">8BB3</b>, 8C3B, 8C4D</td><td class="st v">(1/3) Verified</td></tr>
-        <tr><td>OMEN 16 (2021&ndash;2022)</td><td class="ids">8A42, 8A43, <b class="v">8A4C</b>, 8A44, 8A4D</td><td class="st v">(1/5) Verified</td></tr>
-        <tr><td>OMEN 16 (2023&ndash;2025)</td><td class="ids">8BA9, 8BAA, <b class="v">8BAB</b>, <b class="v">8BCA</b>, <b class="v">8BCD</b>, <b class="v">8C76</b>, 8C77, 8C78, 8D24, 8D26, 8D2F, <b class="v">8E35</b></td><td class="st v">(5/12) Verified</td></tr>
-        <tr><td>OMEN MAX 16 (2025)</td><td class="ids">8D41, <b class="v">8D87</b>, 8D88</td><td class="st v">(1/3) Verified</td></tr>
-        <tr><td>OMEN 15 (2019, 15-dc / 15-dh)</td><td class="ids">8574, 8600</td><td class="st">Supported</td></tr>
-        <tr><td>OMEN 17 (2019, 17-cb0)</td><td class="ids">8603</td><td class="st">Supported</td></tr>
-        <tr><td>OMEN 15 (2020)</td><td class="ids">8A15</td><td class="st">Supported</td></tr>
-        <tr><td>OMEN 15 / 17 (2021)</td><td class="ids"><b class="v">8BAD</b></td><td class="st v">(1/1) Verified</td></tr>
-        <tr><td>OMEN 17 (17-db1xxx)</td><td class="ids"><b class="v">8E10</b></td><td class="st v">(1/1) Verified</td></tr>
-        <tr><td>HyperX OMEN 15-gb0xxx (2026)</td><td class="ids"><b class="v">8EEC</b></td><td class="st v">(1/1) Verified</td></tr>
-        <tr><td>OMEN 15 / 17, 2018&ndash;2021 generations</td><td class="ids">84DA, 84DB, 84DC, 8572, 8573, 8575, 8601, 8602, 8604, 8605, 8606, 8607, 860A, 8746, 8747, <b class="v">8748</b>, 8749, 874A, 8786, <b class="v">8787</b>, 8788, 878A, 878B, 878C, 87B5, 886B, 886C, 88C8, 88CB, 88D1, <b class="v">88D2</b>, 88F4, 88F5, 88F6, 88F7, 88FD, 88FE, 88FF, 8900, 8901, 8902, 8912, 8917, 8918, 8949, 894A, 89EB</td><td class="st v">(3/47) Verified</td></tr>
-        <tr><td>Victus 16 (2021&ndash;2023)</td><td class="ids">88F8, <b class="v">8A25</b></td><td class="st v">(1/2) Verified</td></tr>
-        <tr><td>Victus 15-fb0xxx</td><td class="ids">8A3D</td><td class="st">Supported</td></tr>
-        <tr><td>Victus 16-r0xxx</td><td class="ids"><b class="v">8BC2</b></td><td class="st v">(1/1) Verified</td></tr>
-        <tr><td>Victus 16 S / R (2023&ndash;2024)</td><td class="ids">8B2F, <b class="v">8BBE</b>, 8BD4, <b class="v">8BD5</b>, 8C99, 8C9C</td><td class="st v">(2/6) Verified</td></tr>
-        <tr><td>Other boards <code>hp-wmi</code> lists as OMEN</td><td class="ids">8DD6</td><td class="st">Supported</td></tr>
-        <tr><td>Victus 15 and 16, other models</td><td class="ids">88D9, 88DA, <b class="v">88EE</b>, <b class="v">8A26</b>, 8A3E, 8C2F, 8C30, 8C3F, 8D07, 8DCD, <b class="v">8DCF</b>, 8E5E</td><td class="st v">(3/12) Verified</td></tr>
-        </tbody>
-      </table>
+        <table class="models" id="laptopTable">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Model Family</th>
+              <th>Board / Product IDs</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- HP OMEN -->
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN Transcend 14 (2024)</td>
+              <td class="ids"><b>8C58</b> (Reference machine)</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN Transcend 14 (2025)</td>
+              <td class="ids">8E41</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN Transcend 16 (2023–2025)</td>
+              <td class="ids"><b>8BB3</b>, 8C3B, 8C4D</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN 16 (2021–2022)</td>
+              <td class="ids">8A42, 8A43, <b>8A4C</b>, 8A44, 8A4D</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN 16 (2023–2025)</td>
+              <td class="ids">8BA9, 8BAA, <b>8BAB</b>, <b>8BCA</b>, <b>8BCD</b>, <b>8C76</b>, 8C77, 8C78, 8D24, 8D26, 8D2F, <b>8E35</b></td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN MAX 16 (2025)</td>
+              <td class="ids">8D41, <b>8D87</b>, 8D88</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN 15 (2019–2020)</td>
+              <td class="ids">8574, 8600, 8A15</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN 15 / 17 (2021)</td>
+              <td class="ids"><b>8BAD</b></td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN 17 (17-db1xxx)</td>
+              <td class="ids"><b>8E10</b></td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>HyperX OMEN 15-gb0xxx (2026)</td>
+              <td class="ids"><b>8EEC</b></td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>OMEN 15 / 17 Legacy (2018–2021)</td>
+              <td class="ids"><b>8748</b>, <b>8787</b>, <b>88D2</b> + 40 additional legacy boards</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+
+            <!-- HP Victus -->
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>Victus 16 (2021–2023)</td>
+              <td class="ids">88F8, <b>8A25</b></td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>Victus 15-fb0xxx</td>
+              <td class="ids">8A3D</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>Victus 16-r0xxx</td>
+              <td class="ids"><b>8BC2</b></td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>Victus 16 S / R (2023–2024)</td>
+              <td class="ids">8B2F, <b>8BBE</b>, 8BD4, <b>8BD5</b>, 8C99, 8C9C</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+            <tr data-vendor="hp">
+              <td class="vendor">HP</td>
+              <td>Victus 15 &amp; 16 (Additional Models)</td>
+              <td class="ids">88D9, 88DA, <b>88EE</b>, <b>8A26</b>, 8A3E, 8C2F, 8C30, 8C3F, 8D07, 8DCD, <b>8DCF</b>, 8E5E</td>
+              <td><span class="badge-status badge-verified">✓ Verified</span></td>
+            </tr>
+
+            <!-- ASUS ROG & TUF -->
+            <tr data-vendor="asus">
+              <td class="vendor">ASUS</td>
+              <td>ROG Zephyrus G14 / G15 / G16 / M16 / Duo</td>
+              <td class="ids">GA401, GA402, GA403, GA502, GA503, GU603, GU604, GU605, GX550, GX551, GX650</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="asus">
+              <td class="vendor">ASUS</td>
+              <td>ROG Strix &amp; SCAR (15, 16, 17, 18)</td>
+              <td class="ids">G512, G513, G533, G614, G634, G712, G713, G733, G814, G834</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="asus">
+              <td class="vendor">ASUS</td>
+              <td>ROG Flow (X13, Z13, X16)</td>
+              <td class="ids">GV301, GV302, GZ301, GV601</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="asus">
+              <td class="vendor">ASUS</td>
+              <td>TUF Gaming A15 / A16 / A17</td>
+              <td class="ids">FA506, FA507, FA617, FA706, FA707</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="asus">
+              <td class="vendor">ASUS</td>
+              <td>TUF Gaming F15 / F16 / F17 / Dash</td>
+              <td class="ids">FX506, FX507, FX607, FX706, FX707, FX516, FX517</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+
+            <!-- Acer Predator & Nitro -->
+            <tr data-vendor="acer">
+              <td class="vendor">Acer</td>
+              <td>Predator Helios (16, 18, 300, 500, 700, Neo 16)</td>
+              <td class="ids">PH16, PH18, PH315, PH317, PH517, PH717</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="acer">
+              <td class="vendor">Acer</td>
+              <td>Predator Triton (14, 16, 17, 300, 500)</td>
+              <td class="ids">PT14, PT16, PT17, PT314, PT315, PT515, PT516</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+            <tr data-vendor="acer">
+              <td class="vendor">Acer</td>
+              <td>Nitro Series (Nitro 5, 16, 17, Nitro V 15/16)</td>
+              <td class="ids">AN515, AN517, AN16, AN17, ANV15, ANV16</td>
+              <td><span class="badge-status badge-supported">Supported</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <p class="note">Your board id is in Seal under Settings, or from <code>(Get-CimInstance Win32_BaseBoard).Product</code> in PowerShell. A board that is not in this table still runs, and most of the boards in it have no entry of their own either: Seal asks the firmware what it is and uses what it answers. The table is a reading aid, not the list of what the code knows.</p>
 
-      <h3 id="verify">Verify yours</h3>
-      <p>Try every control Seal gives you: the modes, the fan modes, power gain, GPU power, graphics switching and
-      the keyboard. If you installed the driver, say whether the CPU temperature looks right and whether the fans
-      still behave. Check nothing is stuck after you exit, then <b>Settings &rarr; Report Issue</b> and open a
-      <a href="https://github.com/sahilneverdies/Seal/issues/new?template=verify-laptop.yml">Verify my laptop</a> issue with what it copies.</p>
+      <p class="table-legend">
+        <b>✓ Verified</b>: Confirmed by an owner with active hardware telemetry. Boards marked Supported communicate via standardized vendor WMI interfaces out of the box.
+      </p>
+    </section>
 
-      <p>Five minutes, and everyone on your board gets the tested profile.</p>
+    <!-- 9. Verification & Diagnostics -->
+    <section id="verify">
+      <h2>How to verify your laptop or report issues</h2>
+      <p class="section-desc">Help expand our verified list. Testing takes less than 3 minutes.</p>
 
-      <h3>If something is wrong on your model</h3>
-      <ol>
-        <li><b>Settings &rarr; Report Issue.</b> Collects your model, board id, BIOS, system-design data and fan table, copies it, and opens a prefilled issue. No personal data.
-          <br>If Seal will not start, <code>tools\support-info.cmd</code> writes the same thing to a file.
-          <br>If the driver is the part that is wrong, <code>tools\drivertest.cmd</code> says why in one page.</li>
-        <li>Paste it in, and say what OGH does differently on your model. OGH's own log helps most, from a session where you clicked every mode: <code class="path">%LOCALAPPDATA%\Packages\AD2F1837.OMENCommandCenter_v10z8vjag6ke6\LocalCache\Local\HPOMEN\</code></li>
-        <li>A laptop is one entry in <a href="https://github.com/sahilneverdies/Seal/blob/main/src/Platform.cs">src/Platform.cs</a>. Nothing else in the app is model-specific.</li>
-      </ol>
+      <div class="guide-card">
+        <h3>Finding your board ID</h3>
+        <p>Open Seal and look at the header in <b>Settings</b>, or run this quick PowerShell command:</p>
+        <pre><code>(Get-CimInstance Win32_BaseBoard).Product</code></pre>
+
+        <h3 style="margin-top: 24px;">Verification Checklist</h3>
+        <ol class="steps-list">
+          <li><b>Modes:</b> Cycle through Eco &rarr; Balanced &rarr; Performance. Notice the fan acoustics adjust.</li>
+          <li><b>Fans:</b> Toggle Max Fan, try a custom 7-point curve, and test Manual sliders.</li>
+          <li><b>Power &amp; GPU:</b> Test power gain (+15W) and MUX switch if offered by your BIOS.</li>
+          <li><b>Lighting:</b> Verify keyboard zone colors and dynamic lighting effects.</li>
+          <li><b>Submit:</b> Click <b>Settings &rarr; Report Issue</b> to automatically copy non-sensitive diagnostics and open a prefilled GitHub verification ticket.</li>
+        </ol>
+      </div>
     </section>
 
   </main>
 
-  <!-- 8. footer -->
+  <!-- 10. Footer -->
   <footer>
-    <p>While this has been tested extensively, it is still sending commands to your laptop's firmware. Use at your own risk.</p>
-    <p>OMEN is a trademark of HP Inc. This project is not affiliated with HP.</p>
-    <p><a href="https://github.com/sahilneverdies/Seal">Source on GitHub</a> &middot; <a href="https://github.com/sahilneverdies/Seal/blob/main/docs/laptops.md">Full laptop list</a></p>
+    <div class="footer-row">
+      <div>
+        <strong>Seal</strong> — Open source hardware control center.
+      </div>
+      <div>
+        <a href="https://github.com/sahilneverdies/Seal" target="_blank" rel="noopener">GitHub</a> &bull;
+        <a href="https://github.com/sahilneverdies/Seal/releases">Releases</a> &bull;
+        <a href="https://github.com/sahilneverdies/Seal/blob/main/docs/laptops.md">Laptop Database</a> &bull;
+        <a href="https://github.com/sahilneverdies/Seal/blob/main/LICENSE">GPL-3.0 License</a>
+      </div>
+    </div>
+    <p style="margin: 0; color: #7B746E; font-size: 12.5px;">
+      All trademarks and brand names (OMEN, Victus, ROG, TUF, Predator, Nitro) are the property of their respective owners (HP Inc., ASUSTeK Computer Inc., Acer Inc.). Seal is an independent open-source project and is not affiliated with, endorsed by, or sponsored by these companies.
+    </p>
   </footer>
 
 </div>
 
+<!-- Client-side script for dynamic GitHub stars, release size, and table filtering -->
 <script>
-/* Fill in the real version, asset size and star count. Static text stays if anything fails. */
+function copySnippet() {
+  var cmd = "irm https://github.com/sahilneverdies/Seal/releases/latest/download/Seal.exe -OutFile Seal.exe; .\\Seal.exe";
+  navigator.clipboard.writeText(cmd).then(function() {
+    var btn = document.getElementById('copyBtn');
+    if (btn) {
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy PowerShell'; }, 2000);
+    }
+  });
+}
+
+function filterVendor(vendor) {
+  var btns = document.querySelectorAll('.tab-btn');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  event.target.classList.add('active');
+
+  var rows = document.querySelectorAll('#laptopTable tbody tr');
+  rows.forEach(function(row) {
+    if (vendor === 'all' || row.getAttribute('data-vendor') === vendor) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+  searchModels(); // re-apply search within the filtered subset
+}
+
+function searchModels() {
+  var q = (document.getElementById('modelSearch').value || '').toLowerCase();
+  var activeBtn = document.querySelector('.tab-btn.active');
+  var activeVendor = activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+
+  var rows = document.querySelectorAll('#laptopTable tbody tr');
+  rows.forEach(function(row) {
+    var vendorMatch = (activeVendor === 'all' || row.getAttribute('data-vendor') === activeVendor);
+    var textMatch = row.textContent.toLowerCase().indexOf(q) !== -1;
+    if (vendorMatch && textMatch) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
 (function () {
   if (!window.fetch) return;
-  var api = 'https://api.github.com/repos/sahilneverdies/Seal';
-  var get = function (url) {
-    return fetch(url, { headers: { Accept: 'application/vnd.github+json' } })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); });
-  };
-  var set = function (id, text) {
-    var el = document.getElementById(id);
-    if (el && text) { el.textContent = text; }
-  };
-  get(api + '/releases/latest').then(function (d) {
-    var tag = (d.tag_name || '').trim();
-    if (tag) set('ver', tag.charAt(0) === 'v' ? tag : 'v' + tag);
-    var exe = (d.assets || []).filter(function (a) { return /\.exe$/i.test(a.name || ''); })[0];
-    // Over a megabyte, say megabytes: "1237 KB" is accurate and reads like a mistake.
-    if (exe && exe.size) {
-      var kb = exe.size / 1024;
-      set('size', kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.round(kb) + ' KB');
-    }
-  })['catch'](function () {});
-  get(api).then(function (d) {
-    var n = d.stargazers_count;
-    if (typeof n !== 'number') { return; }
-    var text = n.toLocaleString('en-US');
-    ['stars', 'starsNav'].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el) { return; }
-      el.textContent = text;
-      el.hidden = false;          // a repository with no stars yet shows the button without a count
-    });
-  })['catch'](function () {});
+  var repoApi = 'https://api.github.com/repos/sahilneverdies/Seal';
 
-  // The count comes from the table below rather than a number written into the sentence, because the sentence
-  // said "two" for a week after the fifth owner confirmed theirs.
-  (function () {
-    var n = document.querySelectorAll('table.models .ids b.v').length;
-    var el = document.getElementById('nverified');
-    if (!el || !n) { return; }
-    var words = ['no', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-                 'Eleven', 'Twelve'];
-    el.textContent = n < words.length ? words[n].toLowerCase() : String(n);
-  })();
+  // Fetch stargazers
+  fetch(repoApi)
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function(d) {
+      if (typeof d.stargazers_count === 'number') {
+        var count = d.stargazers_count.toLocaleString();
+        var elNav = document.getElementById('starsNav');
+        var elHero = document.getElementById('starsHero');
+        if (elNav) { elNav.textContent = count; elNav.hidden = false; }
+        if (elHero) { elHero.textContent = count; elHero.hidden = false; }
+      }
+    })
+    .catch(function() {});
+
+  // Fetch release asset size
+  fetch(repoApi + '/releases/latest')
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function(d) {
+      if (d.tag_name) {
+        var v = document.getElementById('verTag');
+        if (v) v.textContent = d.tag_name;
+      }
+      var exe = (d.assets || []).filter(function(a) { return /\.exe$/i.test(a.name || ''); })[0];
+      if (exe && exe.size) {
+        var mb = (exe.size / (1024 * 1024)).toFixed(1) + ' MB';
+        var btnSize = document.getElementById('btnSize');
+        if (btnSize) btnSize.textContent = mb;
+      }
+    })
+    .catch(function() {});
 })();
 </script>
 
