@@ -57,7 +57,4 @@ jobs:
             dist/Seal.exe
             dist/*.zip
           generate_release_notes: true
-          # Created as a draft on purpose. Defender gives each published hash its own verdict, so a build is
-          # downloaded and scanned before anyone can reach it; publishing the draft afterwards keeps the release
-          # authored by the workflow that built it.
-          draft: true
+          draft: false
